@@ -4,7 +4,7 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: '/home/pi/csms/app/public/javascripts'       // path: __dirname + '/public/javascripts'
+    path: '/home/pi/csms/application/server/public/javascripts'       // path: __dirname + '/public/javascripts'
   },
   module: {
     rules: [
