@@ -33,7 +33,7 @@ class Competition extends Component {
   }
   checkNext(e) {
     if(this.props.gender && this.props.classification && this.props.event) {
-      this.props.getSubdivisions(this.props.gender, this.props.classification);
+      this.props.getSubdivisions(this.props.gender, this.props.classification, this.props.event);
       this.props.history.push('/subdivision');
     } else {
       this.props.alert.show(getMessage(MSG_REQUIRE_ALL_ITEMS));
@@ -111,7 +111,7 @@ const mapDispatchToProps = dispatch => {
     // dispatching plain actions
     changeGender: (value) => dispatch(pageControllerGenderAction(value)),
     changeEvent: (value) => dispatch(pageControllerEventAction(value)),
-    getSubdivisions: (gender, classification) => dispatch(subdivisionsAction(gender, classification)),
+    getSubdivisions: (gender, classification, event) => dispatch(subdivisionsAction(gender, classification, event)),
   }
 };
 

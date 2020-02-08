@@ -18,7 +18,8 @@ import {
 // React Component
 import Error from "../components/presentational/error";
 import Loading from "../components/presentational/loading";
-import ContentHeader from "../components/presentational/contentHeader"
+import ContentHeader from "../components/presentational/contentHeader";
+import ContentnNavi from "../components/presentational/contentnNavi";
 
 // Main
 class Subdivision extends Component {
@@ -66,10 +67,11 @@ class Subdivision extends Component {
         </td>
       </tr>
     );
-    let navi = [ ('戻る', '/') ,];
+    let navi = [ ['戻る', '/'], ];
     return (
     <>
       <ContentHeader header={this.props.header} />
+      <ContentnNavi navi={navi} history={this.props.history} />
       <div className="content-body">
         <table>
           <thead>
@@ -81,8 +83,6 @@ class Subdivision extends Component {
         </table>
       </div>
       <div  className="content-footer">
-        <button onClick={() => this.props.history.push('/')}>戻る</button>
-        <button onClick={() => this.props.history.push('/group')}>次へ</button>
       </div>
     </>
     );

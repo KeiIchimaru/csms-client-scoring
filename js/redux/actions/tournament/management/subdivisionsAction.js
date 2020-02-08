@@ -22,10 +22,10 @@ const subdivisionsFailureAction = error => ({
     error
 });
 
-export const subdivisionsAction = (gender, classification) => {
+export const subdivisionsAction = (gender, classification, event) => {
     return (dispatch) => {
         dispatch(subdivisionsRequestAction())
-        let url = `/api/tournament/management/subdivisions/${gender}/${classification}`;
+        let url = `/api/tournament/management/subdivisions/${gender}/${classification}/${event}`;
         return axios.get(url)
         .then(res =>
             dispatch(subdivisionsSuccessAction(res.data))

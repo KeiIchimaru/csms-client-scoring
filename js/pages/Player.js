@@ -37,6 +37,7 @@ const mapStateToProps = (state, ownProps) => {
   // 追加propsの設定
   let additionalProps = {
     isPermittedView,
+    header: getHeaderProps(state),
   };
   return additionalProps;
 };
