@@ -1,0 +1,50 @@
+@charset "utf-8";
+/* CSS Document */
+.content-header h2 {
+    margin-left: 20px;
+}
+.content-header h2 span {
+    margin-left: 5px;
+    font-size: 1.2rem;
+}
+.content-navi {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+.content-navi-item {
+    width: 100px;
+    border: solid 1px white;
+    background-color: lightskyblue;
+}
+.content-navi-item-left {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.content-navi-item-right {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+.content-body {
+    margin-left: 20px;
+    margin-right: 20px;;
+}
+
+/* PAGE: competition */
+.competition .content-body {
+    margin-top: 50px;
+    font-size: 1.5rem;
+    text-align: center;
+}
+.competition .content-body h2 {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+.competition .content-body select {
+    font-size: 1.1rem;
+    border:1px;
+}
+.competition .content-body button {
+    margin-top: 60px;
+    margin-bottom: 20px;
+    width: 100px;
+}

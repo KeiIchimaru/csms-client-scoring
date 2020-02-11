@@ -9,8 +9,8 @@ import {
 
   PAGE_INITIALIZE_COMPETITION,
   PAGE_INITIALIZE_SUBDIVISION,
-  PAGE_INITIALIZE_GROUP,
-  PAGE_INITIALIZE_PLAYER,
+  PAGE_INITIALIZE_COMPETITION_GROUP,
+  PAGE_INITIALIZE_BIBS,
   PAGE_INITIALIZE_INPUT,
 } from "../actions/actionTypes"
 
@@ -26,14 +26,18 @@ const initialState = {
 const pageController = (state = initialState, action) => {
   switch (action.type) {
     case PAGE_INITIALIZE_COMPETITION: {
-      return Object.assign({}, state, { subdivision: NOT_SELECTED, competitionGroup: NOT_SELECTED, bibs: NOT_SELECTED});
+      return Object.assign({}, state, { subdivision: NOT_SELECTED, competitionGroup: NOT_SELECTED, bibs: NOT_SELECTED });
     }
     case PAGE_INITIALIZE_SUBDIVISION: {
-      return Object.assign({}, state, { competitionGroup: NOT_SELECTED, bibs: NOT_SELECTED});
+      return Object.assign({}, state, { subdivision: NOT_SELECTED, competitionGroup: NOT_SELECTED, bibs: NOT_SELECTED });
     }
-    case PAGE_INITIALIZE_GROUP: {
-      return Object.assign({}, state, { bibs: NOT_SELECTED});
+    case PAGE_INITIALIZE_COMPETITION_GROUP: {
+      return Object.assign({}, state, { competitionGroup: NOT_SELECTED, bibs: NOT_SELECTED });
     }
+    case PAGE_INITIALIZE_BIBS: {
+      return Object.assign({}, state, { bibs: NOT_SELECTED });
+    }
+
     case PAGE_CONTROLLER_GENDER: {
       let v = parseInt(action.value);
       let classification = (state.gender == v ? state.classification : NOT_SELECTED);

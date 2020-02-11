@@ -8,6 +8,9 @@ import store from './redux/store'
 import { transitions, positions, types, Provider as AlertProvider } from 'react-alert'
 import AlertTemplate from 'react-alert-template-basic'
 
+// React CSS
+import styles from "../css/style.css";
+
 // optional cofiguration
 const options = {
   position: positions.TOP_CENTER,

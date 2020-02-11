@@ -6,6 +6,10 @@ export function getMessage(id) {
   return MESSAGES[id];
 };
 
+export function getDisplayTime(time) {
+  return time.toString().slice(0,5);
+};
+
 export function getResponceError(response) {
   return {
     url: response.config.url,

@@ -23,8 +23,8 @@ import {
 // React Component
 import Error from "../components/presentational/error";
 import Loading from "../components/presentational/loading";
-import SelectItem from "../components/presentational/selectItem";
 import ContentHeader from "../components/presentational/contentHeader"
+import SelectItem from "../components/presentational/selectItem";
 
 // Main
 class Competition extends Component { 
@@ -41,16 +41,19 @@ class Competition extends Component {
   }
   renderView() {
     return (
-      <>
+      <div className="competition">
         <ContentHeader header={this.props.header} />
         <div className="content-body">
-          <SelectItem name="gender" value={this.props.gender} items={this.props.genderItems} change={this.props.changeGender} />
-          <SelectItem name="event" value={this.props.event} items={this.props.eventItems} change={this.props.changeEvent} />
+          <h2>採点する競技を選択して下さい。</h2>
+          <div>
+            <SelectItem name="gender" value={this.props.gender} items={this.props.genderItems} change={this.props.changeGender} />
+            <SelectItem name="event" value={this.props.event} items={this.props.eventItems} change={this.props.changeEvent} />
+          </div>
+          <button type="button" className="btn-secondary" onClick={e => this.checkNext(e)}>決定</button>
         </div>
         <div  className="content-footer">
-          <button onClick={e => this.checkNext(e)}>次へ</button>
         </div>
-      </>
+      </div>
     );
   };
   render() {
@@ -69,18 +72,23 @@ class Competition extends Component {
 }
 // for React-Redux
 const mapStateToProps = (state, ownProps) => {
-  let error = state.tournament.composition.tournamentEvent.error;
+  // state略号設定
+  let ctl = state.pageController;
+  let t = state.tournament.composition.tournamentEvent;
+  // API error判定
+  let error = t.error;
   if(error) return { error };
+  // Page表示判定
+  let isFetching = t.isFetching;
+  let isPermittedView = true;
   // 以下の内容がpropsに追加される。（更新不可）
   // 第２引数にownPropsを指定できるが、ownPropsの内容でadditionalPropsの内容を変えたい場合に指定する。（additionalPropsはpropsに追加される）
-  let p = state.pageController;
-  let t = state.tournament.composition.tournamentEvent;
   let eventItems = [];
-  if(p.gender != NOT_SELECTED){
-    let classification = p.classification;
-    let classifications = t.events[state.pageController.gender];
+  if(ctl.gender != NOT_SELECTED){
+    let classification = ctl.classification;
+    let classifications = t.events[ctl.gender];
     let keys = Object.keys(classifications);
-    if(keys.length == 1 && p.classification == NOT_SELECTED) {
+    if(keys.length == 1 && ctl.classification == NOT_SELECTED) {
       classification = keys[0];
       // ここでdispatchしてclassificationの設定依頼を行う。(state.pageController.classificationはNOT_SELECTEDのまま)
       // ここでdispatchしても再描画は行われない。
@@ -95,11 +103,12 @@ const mapStateToProps = (state, ownProps) => {
   }
   let additionalProps = {
     error,
-    isFetching: t.isFetching,
+    isFetching,
+    isPermittedView,
     header: getHeaderProps(state),
-    gender: p.gender,
-    classification: p.classification,
-    event: p.event,
+    gender: ctl.gender,
+    classification: ctl.classification,
+    event: ctl.event,
     genderItems: t.genders,
     eventItems,
   }

@@ -11,7 +11,7 @@ import {
 
     PAGE_INITIALIZE_COMPETITION,
     PAGE_INITIALIZE_SUBDIVISION,
-    PAGE_INITIALIZE_GROUP,
+    PAGE_INITIALIZE_COMPETITION_GROUP,
     PAGE_INITIALIZE_PLAYER,
     PAGE_INITIALIZE_INPUT,
   } from "./actionTypes";
@@ -41,16 +41,16 @@ export const pageControllerSubdivisionAction = value => ({
     value
 });
 // PAGE: Group 
-export const pageInitializeGroupAction = () => ({
-    type: PAGE_INITIALIZE_GROUP,
+export const pageInitializeCompetitionGroupAction = () => ({
+    type: PAGE_INITIALIZE_COMPETITION_GROUP,
 });
 export const pageControllerCompetitionGroupAction = value => ({
     type: PAGE_CONTROLLER_COMPETITION_GROUP,
     value
 });
 // PAGE: Player
-export const pageInitializePlayerAction = () => ({
-    type: PAGE_INITIALIZE_PLAYER,
+export const pageInitializeBibsAction = () => ({
+    type: PAGE_INITIALIZE_BIBS,
 });
 export const pageControllerBibsAction = value => ({
     type: PAGE_CONTROLLER_BIBS,

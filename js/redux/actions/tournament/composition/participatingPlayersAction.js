@@ -24,10 +24,10 @@
   export const participatingPlayersAction = (gender, subdivision, group) => {
     let url = `/api/tournament/composition/participatingPlayers/${gender}`;
     if(!(subdivision === undefined) && subdivision){
-        url += `/${subdivision}`;
-        if(!(group === undefined) && group){
-            url += `/${group}`;
-          }
+      url += `/${subdivision}`;
+      if(!(group === undefined) && group){
+        url += `/${group}`;
+      }
     }    
     return (dispatch) => {
       dispatch(participatingPlayersRequestAction())

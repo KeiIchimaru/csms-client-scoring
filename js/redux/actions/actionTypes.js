@@ -11,8 +11,8 @@ export const PAGE_CONTROLLER_BIBS                   = "PAGE_CONTROLLER_BIBS";
 
 export const PAGE_INITIALIZE_COMPETITION            = "PAGE_INITIALIZE_COMPETITION";
 export const PAGE_INITIALIZE_SUBDIVISION            = "PAGE_INITIALIZE_SUBDIVISION";
-export const PAGE_INITIALIZE_GROUP                  = "PAGE_INITIALIZE_GROUP";
-export const PAGE_INITIALIZE_PLAYER                 = "PAGE_INITIALIZE_PLAYER";
+export const PAGE_INITIALIZE_COMPETITION_GROUP      = "PAGE_INITIALIZE_COMPETITION_GROUP";
+export const PAGE_INITIALIZE_BIBS                   = "PAGE_INITIALIZE_BIBS";
 export const PAGE_INITIALIZE_INPUT                  = "PAGE_INITIALIZE_INPUT";
 
 export const DAY_REQUEST                            = 'DAY_REQUEST';

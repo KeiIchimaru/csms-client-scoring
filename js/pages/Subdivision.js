@@ -3,8 +3,8 @@ import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import { NOT_SELECTED, getMessage } from "../lib/ulib";
-import { TITLE_SUBDIVISION } from "../lib/messages";
+import { getMessage, getDisplayTime } from "../lib/ulib";
+import { TITLE_COMPETITION, TITLE_SUBDIVISION } from "../lib/messages";
 
 import { getHeaderProps } from "../lib/props/headerProps";
 
@@ -53,15 +53,16 @@ class Subdivision extends Component {
       return result;
     };
     // 班の表示
+    // map() メソッドは、与えられた関数を配列のすべての要素に対して呼び出し、その結果からなる新しい配列を生成します。
     const subdivisions = this.props.subdivisions.map((subdivision, index) => 
       <tr key={'competitionGroups_' + index.toString()}>
         <td onClick={e => this.redirectGroup(subdivision.id)}>
           {subdivision.number}({subdivision.name})
         </td>
         <td>
-          <div>練習開始:{subdivision.practice_start_time.toString().slice(0,5)}</div>
-          <div>演技開始:{subdivision.start_time.toString().slice(0,5)}</div>
-          <div>演技終了:{subdivision.end_time.toString().slice(0,5)}</div>
+          <div>練習開始:{getDisplayTime(subdivision.practice_start_time)}</div>
+          <div>演技開始:{getDisplayTime(subdivision.start_time)}</div>
+          <div>演技終了:{getDisplayTime(subdivision.end_time)}</div>
         </td>
         <td>
           <table>
@@ -72,7 +73,9 @@ class Subdivision extends Component {
         </td>
       </tr>
     );
-    let navi = [ ['戻る', '/'], ];
+    let navi = [
+      [getMessage(TITLE_COMPETITION), '/'],
+    ];
     return (
     <>
       <ContentHeader header={this.props.header} />
@@ -112,22 +115,25 @@ class Subdivision extends Component {
   }
 };
 const mapStateToProps = (state, ownProps) => {
-  let error = state.tournament.composition.tournamentEvent.error || state.tournament.management.subdivisions.error;
-  if(error) return { error };
-  // Page表示判定
-  let p = state.pageController;
-  let isPermittedView = p.gender && p.classification && p.event;
-  // データ設定
+  // state略号設定
+  let ctl = state.pageController;
   let t = state.tournament.composition.tournamentEvent;
   let s = state.tournament.management.subdivisions;
+  // API error判定
+  let error = t.error || s.error;
+  if(error) return { error };
+  // Page表示判定
+  let isFetching = t.isFetching || s.isFetching;
+  let isPermittedView = ctl.gender && ctl.classification && ctl.event;
   // 追加propsの設定
   let additionalProps = {
     error,
+    isFetching,
     isPermittedView,
     header: getHeaderProps(state),
-    gender: p.gender,
-    classification: p.classification,
-    event: p.event,
+    gender: ctl.gender,
+    classification: ctl.classification,
+    event: ctl.event,
     subdivisions: s.data,
   };
   return additionalProps;
