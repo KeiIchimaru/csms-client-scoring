@@ -29,6 +29,7 @@ const _setCompetitionGroup = (row) => ({
   name: row.c_name,
   abbreviation: row.c_abbreviation,
   organization_id: row.c_organization_id,
+  organization_name: row.o_organization_name,
 })
 const _makeState = (state, action) => {
   let s_id = null;  // 班

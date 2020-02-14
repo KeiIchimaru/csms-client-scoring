@@ -39,3 +39,7 @@ export function getName(items, id){
   }
   return name;
 }
+
+export function getOrganizationName(organizationName) {
+  return organizationName ? organizationName : "個人選抜";
+}

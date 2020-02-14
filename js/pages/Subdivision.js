@@ -3,9 +3,8 @@ import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import { getMessage, getDisplayTime } from "../lib/ulib";
+import { getMessage, getDisplayTime, getOrganizationName } from "../lib/ulib";
 import { TITLE_COMPETITION, TITLE_SUBDIVISION } from "../lib/messages";
-
 import { getHeaderProps } from "../lib/props/headerProps";
 
 // Redux Action
@@ -31,68 +30,71 @@ class Subdivision extends Component {
   }
   redirectGroup(subdivision) {
     this.props.changeSubdivision(subdivision);
-    this.props.participatingPlayers(this.props.gender, subdivision);
+    this.props.dispatchParticipatingPlayers(this.props.header.gender, subdivision);
     this.props.history.push('/group')
   }
   redirectPlayer(subdivision, competitionGroup) {
     this.props.changeSubdivision(subdivision);
-    this.props.changeControllerCompetitionGroup(competitionGroup);
-    this.props.participatingPlayers(this.props.gender, subdivision, competitionGroup);
+    this.props.changeCompetitionGroup(competitionGroup);
+    this.props.dispatchParticipatingPlayers(this.props.header.gender, subdivision, competitionGroup);
     this.props.history.push('/player')
   }
   renderView() {
     // 組の表示
-    const groups = (parent_index, subdivision_id, competitionGroups) => {
-      const result = competitionGroups.map((competitionGroup, index) => 
-      <tr key={'competitionGroups_' + parent_index + '_' + index.toString()}>
-        <td onClick={e => this.redirectPlayer(subdivision_id, competitionGroup.id)}>
-          {competitionGroup.number}({competitionGroup.name})
+    const htmlGroup = (subdivision_id, competitionGroup) => (
+      <>
+        <td className="linkPlayer" onClick={e => this.redirectPlayer(subdivision_id, competitionGroup.id)}>
+          {competitionGroup.number}
         </td>
-      </tr>
-      );
-      return result;
-    };
+        <td className="organizationName">
+          {getOrganizationName(competitionGroup.organization_name)}
+        </td>
+        <td>
+          {Object.keys(competitionGroup.players).length}人
+        </td>
+      </>
+    );
     // 班の表示
     // map() メソッドは、与えられた関数を配列のすべての要素に対して呼び出し、その結果からなる新しい配列を生成します。
-    const subdivisions = this.props.subdivisions.map((subdivision, index) => 
-      <tr key={'competitionGroups_' + index.toString()}>
-        <td onClick={e => this.redirectGroup(subdivision.id)}>
-          {subdivision.number}({subdivision.name})
-        </td>
-        <td>
-          <div>練習開始:{getDisplayTime(subdivision.practice_start_time)}</div>
-          <div>演技開始:{getDisplayTime(subdivision.start_time)}</div>
-          <div>演技終了:{getDisplayTime(subdivision.end_time)}</div>
-        </td>
-        <td>
-          <table>
-            <tbody>
-              {groups(index.toString(), subdivision.id, subdivision.competitionGroups)}
-            </tbody>
-          </table>
-        </td>
-      </tr>
+    const htmlSubdivisions = this.props.subdivisions.map((subdivision, i) =>
+      subdivision.competitionGroups.map((competitionGroup, j) => 
+        <tr key={`${Subdivision.displayName}_${i}_${j}`}>
+          {j == 0 &&
+            <>
+              <td className="linkGroup" rowSpan={subdivision.competitionGroups.length} onClick={e => this.redirectGroup(subdivision.id)}>
+                {subdivision.number}
+              </td>
+              <td className="actingTime" rowSpan={subdivision.competitionGroups.length}>
+                <div>練習開始:{getDisplayTime(subdivision.practice_start_time)}</div>
+                <div>演技開始:{getDisplayTime(subdivision.start_time)}</div>
+                <div>演技終了:{getDisplayTime(subdivision.end_time)}</div>
+              </td>
+            </>
+          }
+          {htmlGroup(subdivision.id, competitionGroup)}
+        </tr>
+      )
     );
     let navi = [
       [getMessage(TITLE_COMPETITION), '/'],
     ];
     return (
-    <>
+    <div className="subdivision">
       <ContentHeader header={this.props.header} />
       <ContentnNavi navi={navi} history={this.props.history} />
       <div className="content-body">
-        <table>
+        <table className="w-100">
           <thead>
-            <tr><th>班</th><th>演技時間</th><th>組</th></tr>
+            <tr><th>班</th><th>演技時間</th><th>組</th><th>学校名</th><th>選手</th></tr>
           </thead>
           <tbody>
-            {subdivisions}
+            {htmlSubdivisions}
           </tbody>
         </table>
       </div>
       <div  className="content-footer">
       </div>
-    </>
+    </div>
     );
   }
   render() {
@@ -126,14 +128,12 @@ const mapStateToProps = (state, ownProps) => {
   let isFetching = t.isFetching || s.isFetching;
   let isPermittedView = ctl.gender && ctl.classification && ctl.event;
   // 追加propsの設定
+  let header = getHeaderProps(state);
   let additionalProps = {
     error,
     isFetching,
     isPermittedView,
-    header: getHeaderProps(state),
-    gender: ctl.gender,
-    classification: ctl.classification,
-    event: ctl.event,
+    header,
     subdivisions: s.data,
   };
   return additionalProps;
@@ -143,9 +143,10 @@ const mapDispatchToProps = dispatch => {
   return {
     // dispatching plain actions
     changeSubdivision: (value) => dispatch(pageControllerSubdivisionAction(value)),
-    changeControllerCompetitionGroup: (value) => dispatch(pageControllerCompetitionGroupAction(value)),
-    participatingPlayers: (gender, subdivision, group) => dispatch(participatingPlayersAction(gender, subdivision, group)),
+    changeCompetitionGroup: (value) => dispatch(pageControllerCompetitionGroupAction(value)),
+    dispatchParticipatingPlayers: (gender, subdivision, group) => dispatch(participatingPlayersAction(gender, subdivision, group)),
   }
 };
 
+Subdivision.displayName = "Subdivision";
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Subdivision))

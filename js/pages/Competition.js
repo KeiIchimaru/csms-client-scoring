@@ -83,9 +83,10 @@ const mapStateToProps = (state, ownProps) => {
   let isPermittedView = true;
   // 以下の内容がpropsに追加される。（更新不可）
   // 第２引数にownPropsを指定できるが、ownPropsの内容でadditionalPropsの内容を変えたい場合に指定する。（additionalPropsはpropsに追加される）
+  let classification = ctl.classification;
+  let event = ctl.event;
   let eventItems = [];
   if(ctl.gender != NOT_SELECTED){
-    let classification = ctl.classification;
     let classifications = t.events[ctl.gender];
     let keys = Object.keys(classifications);
     if(keys.length == 1 && ctl.classification == NOT_SELECTED) {
@@ -93,6 +94,7 @@ const mapStateToProps = (state, ownProps) => {
       // ここでdispatchしてclassificationの設定依頼を行う。(state.pageController.classificationはNOT_SELECTEDのまま)
       // ここでdispatchしても再描画は行われない。
       ownProps.dispatch(pageControllerClassificationAction(classification));
+      
     }
     if(classification != NOT_SELECTED){
       let events = classifications[classification];
@@ -107,8 +109,8 @@ const mapStateToProps = (state, ownProps) => {
     isPermittedView,
     header: getHeaderProps(state),
     gender: ctl.gender,
-    classification: ctl.classification,
-    event: ctl.event,
+    classification,
+    event,
     genderItems: t.genders,
     eventItems,
   }

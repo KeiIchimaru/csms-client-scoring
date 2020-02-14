@@ -8,7 +8,7 @@ const selectItem = (props) => {
     <option key={item[0]} value={item[0]}>{item[1]}</option>
   );  
   return (
-    <select name={props.name} defaultValue={props.value} onChange={(e) => changeValue(e, props.change)} >
+    <select name={props.name} value={props.value} onChange={(e) => changeValue(e, props.change)} >
       <option key="0" value="0">--選択してください--</option>
       {items};
     </select>

@@ -1,20 +1,33 @@
 @charset "utf-8";
 /* CSS Document */
-.content-header h2 {
-    margin-left: 20px;
+.content-header {
+    width: 100%;
+    padding: 10px;;
 }
-.content-header h2 span {
-    margin-left: 5px;
-    font-size: 1.2rem;
+.content-header h2 {
+    font-size: 1.5rem;
+    text-align: center;
+}
+.content-header h3 {
+    text-align: center;
+    color: rgb(25, 25, 25);
+    border: 1px black solid;
+    background-color: darkseagreen;
 }
 .content-navi {
+    width: 100%;
+    font-size: 1.5rem;
+    margin-top: 10px;
     margin-bottom: 20px;
-    font-size: 1.2rem;
 }
 .content-navi-item {
-    width: 100px;
+    width: 10rem;
     border: solid 1px white;
     background-color: lightskyblue;
+}
+.content-navi-item:hover {
+    color: white;
+    background-color: rgb(68, 68, 250);
 }
 .content-navi-item-left {
     border-top-left-radius: 10px;
@@ -25,15 +38,56 @@
     border-bottom-right-radius: 10px;
 }
 .content-body {
-    margin-left: 20px;
-    margin-right: 20px;;
+    width: 90%;
+    font-size: 1.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+.content-body table,td,th {
+    border: 1px black solid;
+}
+.content-body table {
+    background-color:snow;
+}
+.content-body th {
+    color: white;
+    background-color: darkgray;
+}
+.content-body table {
+    width: 100%;
+}
+.content-body td {
+    padding: 5px;
+}
+.linkGroup,.linkPlayer,.linkBibs {
+    width: 5rem;
+    background: lightgoldenrodyellow; 
+}
+.linkGroup:hover {
+    background: lightpink; 
+}
+.linkPlayer:hover {
+    background: lightgreen; 
+}
+.linkBibs:hover {
+    background: rgb(255, 140, 255); 
+}
+.organizationName {
+    text-align: left;
+    font-size: 1.2rem;
+}
+.bibs {
+    text-align: right;
+    font-size: 2rem;
+}
+.playerName {
+    text-align: left;
 }
 
-/* PAGE: competition */
+/* PAGE: Competition */
 .competition .content-body {
     margin-top: 50px;
-    font-size: 1.5rem;
-    text-align: center;
 }
 .competition .content-body h2 {
     margin-top: 20px;
@@ -47,4 +101,14 @@
     margin-top: 60px;
     margin-bottom: 20px;
     width: 100px;
+}
+
+/* PAGE: Subdivision */
+.subdivision .actingTime {
+    width: 11rem;
+}
+
+/* PAGE: Group */
+.group .organizationName {
+    width: 15rem;
 }

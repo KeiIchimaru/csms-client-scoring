@@ -3,10 +3,8 @@ import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import { NOT_SELECTED, getMessage } from "../lib/ulib";
+import { NOT_SELECTED, getMessage, getOrganizationName } from "../lib/ulib";
 import { TITLE_COMPETITION, TITLE_SUBDIVISION, TITLE_GROUP } from "../lib/messages";
-
-// React Component
 import { getHeaderProps } from "../lib/props/headerProps";
 
 // Redux Action
@@ -14,17 +12,26 @@ import {
   pageInitializeCompetitionGroupAction,
   pageControllerCompetitionGroupAction,
 } from "../redux/actions/pageControllerAction";
+import {
+  participatingPlayersAction,
+} from "../redux/actions/tournament/composition/participatingPlayersAction";
 
 // React Component
 import Error from "../components/presentational/error";
 import Loading from "../components/presentational/loading";
 import ContentHeader from "../components/presentational/contentHeader";
 import ContentnNavi from "../components/presentational/contentnNavi";
+import ParticipatingPlayer from "../components/presentational/participatingPlayer";
 
 // Main
 class Group extends Component {
   componentDidMount() {
     document.title = getMessage(TITLE_GROUP);
+  }
+  redirectPlayer(competitionGroup) {
+    this.props.changeCompetitionGroup(competitionGroup);
+    this.props.dispatchParticipatingPlayers(this.props.header.gender, this.props.header.subdivision.id, competitionGroup);
+    this.props.history.push('/player')
   }
   renderView() {
     let maxPlayerNumber = 0;
@@ -33,46 +40,36 @@ class Group extends Component {
         maxPlayerNumber = group.players.length;
       }
     });
-    const players = (parent_index, players) => {
-      const result = players.map((player, index) => {
-        let entryPlayer = this.props.players[player.bibs];
-        return (
-          <div key={`${Group.displayName}_${parent_index}_${index}`} className="d-inline-block border">
-            {player.bibs}:{entryPlayer.player_name}
-          </div>
-        )
-      });
-      if(result.length < maxPlayerNumber) {
-        for(let index = result.length ; index < maxPlayerNumber; index++) {
-          result.push(
-            <div key={`${Group.displayName}_${parent_index}_${index}`} className="d-inline-block border">&nbsp;</div>
-          );
-        }
-      }
-      return result;
-    }
-    const competitionGroups = this.props.competitionGroups.map((group, index) =>
-      <tr key={`${Group.displayName}_${index}`}>
-          <td>
-            {`${group.number}(${group.name})`}
-          </td>
-          <td>
-            {players(index, group.players)}
-          </td>
-      </tr>
+    const competitionGroups = this.props.competitionGroups.map((competitionGroup, i) => 
+      competitionGroup.players.map((player, j) => 
+        <tr key={`${Group.displayName}_${i}_${j}`}>
+          {j == 0 &&
+            <>
+              <td className="linkPlayer" rowSpan={competitionGroup.players.length} onClick={e => this.redirectPlayer(competitionGroup.id)}>
+                {competitionGroup.number}
+              </td>
+              <td className="organizationName" rowSpan={competitionGroup.players.length}>
+                {getOrganizationName(competitionGroup.organization_name)}
+              </td>
+            </>
+          }
+          <ParticipatingPlayer participatingPlayer={this.props.participatingPlayers[player.bibs]} />
+        </tr>
+      )
     );
     let navi = [
       [getMessage(TITLE_COMPETITION), "/"],
       [getMessage(TITLE_SUBDIVISION), "/subdivision"],
     ];
     return (
-    <>
+    <div className="group">
       <ContentHeader header={this.props.header} />
       <ContentnNavi navi={navi} history={this.props.history} />
       <div className="content-body">
         <table className="w-100">
           <thead>
-            <tr><th className="w-25">組</th><th>選手</th></tr>
+            <tr><th rowSpan="2" className="competitionGroup">組</th><th rowSpan="2">学校名</th><th colSpan="3">選手</th></tr>
+            <tr><th>ビブス</th><th>氏名</th><th>得点</th></tr>
           </thead>
           <tbody>
             {competitionGroups}
@@ -81,7 +78,7 @@ class Group extends Component {
       </div>
       <div  className="content-footer">
       </div>
-    </>
+    </div>
     )
   }
   render() {
@@ -116,21 +113,15 @@ const mapStateToProps = (state, ownProps) => {
   let isFetching = t.isFetching || s.isFetching || p.isFetching;
   let isPermittedView = ctl.gender && ctl.classification && ctl.event && ctl.subdivision;
   // 追加propsの設定
-  let competitionGroups;
-  for(let i = 0; i < s.data.length; i++) {
-    if(s.data[i].id == ctl.subdivision) {
-      competitionGroups = s.data[i].competitionGroups;
-      break;
-    }
-  }
+  let header = getHeaderProps(state);
+  let competitionGroups = (header.subdivision ? header.subdivision.competitionGroups : {}); 
   let additionalProps = {
     error,
     isFetching,
     isPermittedView,
-    header: getHeaderProps(state),
-    subdivisions: s.data,
+    header,
     competitionGroups,
-    players: p.data,
+    participatingPlayers: p.data,
   };
   return additionalProps;
 };
@@ -138,7 +129,8 @@ const mapDispatchToProps = dispatch => {
   dispatch(pageInitializeCompetitionGroupAction());
   return {
     // dispatching plain actions
-    changeGroup: (value) => dispatch(pageControllerCompetitionGroupAction(value)),
+    changeCompetitionGroup: (value) => dispatch(pageControllerCompetitionGroupAction(value)),
+    dispatchParticipatingPlayers: (gender, subdivision, group) => dispatch(participatingPlayersAction(gender, subdivision, group)),
   }
 };
 
