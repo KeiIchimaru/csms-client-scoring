@@ -21,12 +21,15 @@
     error
   });
   
-  export const participatingPlayersAction = (gender, subdivision, group) => {
+  export const participatingPlayersAction = (gender, subdivision, group, bibs) => {
     let url = `/api/tournament/composition/participatingPlayers/${gender}`;
     if(!(subdivision === undefined) && subdivision){
       url += `/${subdivision}`;
       if(!(group === undefined) && group){
         url += `/${group}`;
+        if(!(bibs === undefined) && bibs){
+          url += `/${bibs}`;
+        }
       }
     }    
     return (dispatch) => {

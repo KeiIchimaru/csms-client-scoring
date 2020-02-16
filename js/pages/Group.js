@@ -11,6 +11,7 @@ import { getHeaderProps } from "../lib/props/headerProps";
 import {
   pageInitializeCompetitionGroupAction,
   pageControllerCompetitionGroupAction,
+  pageControllerBibsAction,
 } from "../redux/actions/pageControllerAction";
 import {
   participatingPlayersAction,
@@ -33,6 +34,13 @@ class Group extends Component {
     this.props.dispatchParticipatingPlayers(this.props.header.gender, this.props.header.subdivision.id, competitionGroup);
     this.props.history.push('/player')
   }
+  redirectInput(competitionGroup, bibs) {
+    let h = this.props.header;
+    this.props.changeCompetitionGroup(competitionGroup);
+    this.props.changeBibs(bibs);
+    this.props.dispatchParticipatingPlayers(h.gender, h.subdivision.id, competitionGroup, bibs);
+    this.props.history.push('/input')
+  }
   renderView() {
     let maxPlayerNumber = 0;
     this.props.competitionGroups.forEach(group => {
@@ -53,7 +61,7 @@ class Group extends Component {
               </td>
             </>
           }
-          <ParticipatingPlayer participatingPlayer={this.props.participatingPlayers[player.bibs]} />
+          <ParticipatingPlayer event={this.props.header.event} competitionGroup={competitionGroup.id} player={player} participatingPlayer={this.props.participatingPlayers[player.bibs]} onClick={this.redirectInput} isShort={true} />
         </tr>
       )
     );
@@ -68,8 +76,8 @@ class Group extends Component {
       <div className="content-body">
         <table className="w-100">
           <thead>
-            <tr><th rowSpan="2" className="competitionGroup">組</th><th rowSpan="2">学校名</th><th colSpan="3">選手</th></tr>
-            <tr><th>ビブス</th><th>氏名</th><th>得点</th></tr>
+            <tr><th rowSpan="2" className="competitionGroup">組</th><th rowSpan="2">学校名</th><th colSpan="4">選手</th></tr>
+            <tr><th>番</th><th>氏名</th><th className="actingOrderTitle">演技順</th><th>得点</th></tr>
           </thead>
           <tbody>
             {competitionGroups}
@@ -130,6 +138,7 @@ const mapDispatchToProps = dispatch => {
   return {
     // dispatching plain actions
     changeCompetitionGroup: (value) => dispatch(pageControllerCompetitionGroupAction(value)),
+    changeBibs: (value) => dispatch(pageControllerBibsAction(value)),
     dispatchParticipatingPlayers: (gender, subdivision, group) => dispatch(participatingPlayersAction(gender, subdivision, group)),
   }
 };

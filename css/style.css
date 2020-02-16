@@ -84,6 +84,18 @@
 .playerName {
     text-align: left;
 }
+.actingOrderTitle {
+    font-size: 1.0rem;
+}
+.score {
+    width: 2.5rem;
+}
+.boderLeft2 {
+    border-left-width: 2px;
+}
+.boderBottom2 {
+    border-bottom-width: 2px;
+}
 
 /* PAGE: Competition */
 .competition .content-body {
@@ -111,4 +123,18 @@
 /* PAGE: Group */
 .group .organizationName {
     width: 15rem;
+}
+
+/* PAGE: Player */
+.player table {
+    border-width: 2px;
+}
+.player th {
+    border-bottom-width: 2px;
+}
+
+/* PAGE: Input */
+.input input {
+    font-size: 3.0rem;
+    width: 8rem;
 }

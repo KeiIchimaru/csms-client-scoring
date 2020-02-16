@@ -11,6 +11,9 @@ import { getHeaderProps } from "../lib/props/headerProps";
 import {
   pageControllerBibsAction,
 } from "../redux/actions/pageControllerAction";
+import {
+  participatingPlayersAction,
+} from "../redux/actions/tournament/composition/participatingPlayersAction";
 
 // React Component
 import Error from "../components/presentational/error";
@@ -20,13 +23,24 @@ import ContentnNavi from "../components/presentational/contentnNavi";
 import ParticipatingPlayer from "../components/presentational/participatingPlayer";
 
 class Player extends Component {
+  constructor() {
+    super();
+    // 参照：https://qiita.com/konojunya/items/fc0cfa6a56821e709065
+    this.redirectInput = this.redirectInput.bind(this);
+  }
   componentDidMount() {
     document.title = '選手選択';
+  }
+  redirectInput(bibs) {
+    let h = this.props.header;
+    this.props.changeBibs(bibs);
+    this.props.dispatchParticipatingPlayers(h.gender, h.subdivision.id, h.competitionGroup, bibs);
+    this.props.history.push('/input')
   }
   renderView() {
     const players = this.props.players.map((player, i) => 
       <tr key={`${Player.displayName}_${i}`}>
-        <ParticipatingPlayer participatingPlayer={this.props.participatingPlayers[player.bibs]} />
+        <ParticipatingPlayer event={this.props.header.event} player={player} participatingPlayer={this.props.participatingPlayers[player.bibs]} onClick={this.redirectInput} />
       </tr>
     );
     let navi = [
@@ -41,7 +55,21 @@ class Player extends Component {
         <div className="content-body">
           <table className="w-100">
             <thead>
-              <tr><th>ビブス</th><th>氏名</th><th>得点</th></tr>
+              <tr>
+                <th>番</th>
+                <th>氏名</th>
+                <th className="actingOrderTitle">演技順</th>
+                <th className="boderLeft2">D2</th>
+                <th>D1</th>
+                <th className="boderLeft2">E1</th>
+                <th>E2</th>
+                <th>E3</th>
+                <th>E4</th>
+                <th className="boderLeft2">E計</th>
+                <th>合計</th>
+                <th>減点</th>
+                <th className="boderLeft2">決定点</th>
+              </tr>
             </thead>
             <tbody>
               {players}
@@ -101,6 +129,7 @@ const mapDispatchToProps = dispatch => {
   return {
     // dispatching plain actions
     changeBibs: (value) => dispatch(pageControllerBibsAction(value)),
+    dispatchParticipatingPlayers: (gender, subdivision, group) => dispatch(participatingPlayersAction(gender, subdivision, group)),
   }
 };
 
