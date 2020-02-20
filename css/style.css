@@ -1,140 +1,207 @@
 @charset "utf-8";
 /* CSS Document */
 .content-header {
-    width: 100%;
-    padding: 10px;;
+  width: 100%;
+  padding: 10px;;
 }
 .content-header h2 {
-    font-size: 1.5rem;
-    text-align: center;
+  font-size: 1.5rem;
+  text-align: center;
 }
 .content-header h3 {
-    text-align: center;
-    color: rgb(25, 25, 25);
-    border: 1px black solid;
-    background-color: darkseagreen;
+  text-align: center;
+  color: rgb(25, 25, 25);
+  border: 1px black solid;
+  background-color: darkseagreen;
 }
 .content-navi {
-    width: 100%;
-    font-size: 1.5rem;
-    margin-top: 10px;
-    margin-bottom: 20px;
+  width: 100%;
+  font-size: 1.5rem;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 .content-navi-item {
-    width: 10rem;
-    border: solid 1px white;
-    background-color: lightskyblue;
+  width: 10rem;
+  border: solid 1px white;
+  background-color: lightskyblue;
 }
 .content-navi-item:hover {
-    color: white;
-    background-color: rgb(68, 68, 250);
+  color: white;
+  background-color: rgb(68, 68, 250);
 }
 .content-navi-item-left {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 .content-navi-item-right {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 .content-body {
-    width: 90%;
-    font-size: 1.5rem;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
+  width: 90%;
+  font-size: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
-.content-body table,td,th {
-    border: 1px black solid;
+.content-body table, .content-body td, .content-body th {
+  border: 1px black solid;
 }
 .content-body table {
-    background-color:snow;
+  background-color:snow;
 }
 .content-body th {
-    color: white;
-    background-color: darkgray;
+  color: white;
+  background-color: darkgray;
 }
 .content-body table {
-    width: 100%;
+  width: 100%;
 }
 .content-body td {
-    padding: 5px;
+  padding: 5px;
 }
-.linkGroup,.linkPlayer,.linkBibs {
-    width: 5rem;
-    background: lightgoldenrodyellow; 
+.linkGroup, .linkPlayer, .linkBibs {
+  width: 5rem;
+  background: lightgoldenrodyellow; 
 }
 .linkGroup:hover {
-    background: lightpink; 
+  background: lightpink; 
 }
 .linkPlayer:hover {
-    background: lightgreen; 
+  background: lightgreen; 
 }
 .linkBibs:hover {
-    background: rgb(255, 140, 255); 
+  background: rgb(255, 140, 255); 
 }
 .organizationName {
-    text-align: left;
-    font-size: 1.2rem;
+  text-align: left;
+  font-size: 1.2rem;
 }
 .bibs {
-    text-align: right;
-    font-size: 2rem;
+  text-align: right;
+  font-size: 2rem;
 }
 .playerName {
-    text-align: left;
+  text-align: left;
 }
 .actingOrderTitle {
-    font-size: 1.0rem;
+  font-size: 1.0rem;
 }
 .score {
-    width: 2.5rem;
-}
-.boderLeft2 {
-    border-left-width: 2px;
-}
-.boderBottom2 {
-    border-bottom-width: 2px;
+  width: 2.5rem;
 }
 
 /* PAGE: Competition */
 .competition .content-body {
-    margin-top: 50px;
+  font-size: 2.0rem;
+  margin-top: 50px;
 }
 .competition .content-body h2 {
-    margin-top: 20px;
-    margin-bottom: 40px;
+  margin-top: 20px;
+  margin-bottom: 40px;
 }
 .competition .content-body select {
-    font-size: 1.1rem;
-    border:1px;
+  font-size: 2.0rem;
+  border:1px;
+  margin-bottom: 20px;
 }
 .competition .content-body button {
-    margin-top: 60px;
-    margin-bottom: 20px;
-    width: 100px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  width: 100px;
 }
 
 /* PAGE: Subdivision */
 .subdivision .actingTime {
-    width: 11rem;
+  width: 11rem;
 }
 
 /* PAGE: Group */
 .group .organizationName {
-    width: 15rem;
+  width: 15rem;
 }
 
 /* PAGE: Player */
 .player table {
-    border-width: 2px;
+  border-width: 2px;
 }
-.player th {
-    border-bottom-width: 2px;
+.player table tr th {
+  border-bottom-width: 2px;
 }
 
 /* PAGE: Input */
-.input input {
-    font-size: 3.0rem;
-    width: 8rem;
+.input table {
+  width: 100%;
+  border-width: 2px;
+}
+.input table tr th {
+  width: 100px;
+  border-bottom-width: 1px;
+}
+.input table tbody tr td input, .input table tbody tr td div {
+  font-size: 3.0rem;
+  width: 6rem;
+}
+.input .participatingPlayer {
+  width: 100%;
+  font-size: 3.0rem;
+  text-align: center;
+}
+.input .participatingPlayer div {
+  display: inline-block;
+}
+.input .boderLeft2 {
+  border-left-width: 2px;
+}
+.input .boderBottom2 {
+  border-bottom-width: 2px;
+}
+
+@media only screen and (max-width: 800px) {
+  .input table {
+    width: 260px;
+    margin: auto;
+    border-width: 2px;
+  }
+  .input table thead {
+    display: block;
+    float: left;
+    width: 50%;
+  }
+  .input table tbody {
+    display: block;
+    float: left;
+    width: 50%;
+  }
+  .input table thead tr, .input table tbody tr {
+    display: block;
+    float: left;
+    width: 100%;
+  }
+  .input table thead tr th, .input table tbody tr td  {
+    display: block;
+    height: 90px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom-width: 1px;
+  }
+  .input table thead tr th div, .input table tbody tr td div {
+    height: 90px;
+  }
+  .input table thead tr th, .input table tbody tr td {
+    width: 100%;
+    text-align: center;
+    display: table;
+  }
+  .input table thead tr th div, .input table tbody tr td div {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  .input .boderLeft2 {
+    border-top: 2px black solid;
+  }
+  .input .boderBottom2 {
+    border-top: 2px black solid;
+  }
 }

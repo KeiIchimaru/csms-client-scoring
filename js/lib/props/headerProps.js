@@ -4,6 +4,7 @@ export const getHeaderProps = (state) => {
   let ctl = state.pageController;
   let d = state.tournament.management.day;
   let t = state.tournament.composition.tournamentEvent;
+  let pp = state.tournament.composition.participatingPlayers;
   
   let subdivision = null;
   let competitionGroup = null;
@@ -30,7 +31,7 @@ export const getHeaderProps = (state) => {
     for(let i = 0; i < competitionGroup.players.length; i++) {
       if(ctl.bibs == competitionGroup.players[i].bibs) {
         player = competitionGroup.players[i];
-        participatingPlayer = state.tournament.composition.participatingPlayers[ctl.bibs];
+        participatingPlayer = pp.players[ctl.bibs];
         break;
       }
     }

@@ -57,7 +57,7 @@ const pageController = (state = initialState, action) => {
       return Object.assign({}, state, { competitionGroup: parseInt(action.value) });
     }
     case PAGE_CONTROLLER_BIBS: {
-      return Object.assign({}, state, { bibs: parseInt(action.value) });
+      return Object.assign({}, state, { bibs: action.value });
     }
     default: {
       return state;

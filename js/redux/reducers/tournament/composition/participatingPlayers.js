@@ -22,7 +22,7 @@
         return Object.assign({}, initialState, { isFetching: true });
       }
       case PARTICIPATING_PLAYERS_SUCCESS: {
-        return Object.assign({}, initialState, { data: action.data });
+        return Object.assign({}, initialState, { players: action.data });
       }
       case PARTICIPATING_PLAYERS_FAILURE: {
         let error = getResponceError(action.error.response);

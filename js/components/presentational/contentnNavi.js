@@ -1,5 +1,12 @@
 import React from 'react';
 
+const naviClicked = (history, item) => {
+  let doJump = true;
+  if(item.length == 3) {
+    doJump = item[2]();
+  }
+  if(doJump) history.push(item[1]);
+}
 // props set by getHeaderProps
 const contentNavi = (props) => {
   const items = props.navi.map((item, index) => {
@@ -16,7 +23,7 @@ const contentNavi = (props) => {
       }
     }
     return (
-      <div className={`content-navi-item ${border} d-inline-block`} key={`contentNavi_${index}`} onClick={() => props.history.push(item[1])}>{item[0]}</div>
+      <div className={`content-navi-item ${border} d-inline-block`} key={`contentNavi_${index}`} onClick={() => naviClicked(props.history, item)}>{item[0]}</div>
     );
   });  
   return (

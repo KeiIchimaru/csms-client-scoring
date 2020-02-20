@@ -39,7 +39,15 @@ export function getName(items, id){
   }
   return name;
 }
-
 export function getOrganizationName(organizationName) {
   return organizationName ? organizationName : "個人選抜";
+}
+export function isAllEntered(items) {
+  if(items && isDict(items)) {
+    for (let key in items) {
+      if(!items[key] || items[key] == null) return false;
+    };
+    return true;
+  }
+  return false;
 }

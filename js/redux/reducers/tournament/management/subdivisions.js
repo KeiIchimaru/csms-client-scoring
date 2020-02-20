@@ -74,7 +74,6 @@ const _makeState = (state, action) => {
       _changeCompetitionGroup();
     }
     players.push({
-      id: null,
       bibs: row.p_bibs,
       entry_organization_id: row.p_entry_organization_id,
       sequence: row.p_sequence

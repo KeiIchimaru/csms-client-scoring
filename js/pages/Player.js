@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
 import { NOT_SELECTED, getMessage } from "../lib/ulib";
-import { TITLE_COMPETITION, TITLE_SUBDIVISION, TITLE_GROUP } from "../lib/messages";
+import { TITLE_COMPETITION, TITLE_SUBDIVISION, TITLE_GROUP, TITLE_PLAYER } from "../lib/messages";
 import { getHeaderProps } from "../lib/props/headerProps";
 
 // Redux Action
@@ -23,21 +23,25 @@ import ContentnNavi from "../components/presentational/contentnNavi";
 import ParticipatingPlayer from "../components/presentational/participatingPlayer";
 
 class Player extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     // 参照：https://qiita.com/konojunya/items/fc0cfa6a56821e709065
     this.redirectInput = this.redirectInput.bind(this);
   }
   componentDidMount() {
-    document.title = '選手選択';
+    document.title = getMessage(TITLE_PLAYER);
+    let h = this.props.header;
+    // ブラウザのリロードを押された場合、stateはクリアされる。(redirectの前にcallされる)
+    if(h.day) {
+      this.props.dispatchParticipatingPlayers(h.gender, h.subdivision.id, h.competitionGroup.id);
+    }
   }
   redirectInput(bibs) {
-    let h = this.props.header;
     this.props.changeBibs(bibs);
-    this.props.dispatchParticipatingPlayers(h.gender, h.subdivision.id, h.competitionGroup, bibs);
     this.props.history.push('/input')
   }
   renderView() {
+    let h = this.props.header;
     const players = this.props.players.map((player, i) => 
       <tr key={`${Player.displayName}_${i}`}>
         <ParticipatingPlayer event={this.props.header.event} player={player} participatingPlayer={this.props.participatingPlayers[player.bibs]} onClick={this.redirectInput} />
@@ -105,12 +109,12 @@ const mapStateToProps = (state, ownProps) => {
   let ctl = state.pageController;
   let t = state.tournament.composition.tournamentEvent;
   let s = state.tournament.management.subdivisions;
-  let p = state.tournament.composition.participatingPlayers;
+  let pp = state.tournament.composition.participatingPlayers;
   // API error判定
-  let error = t.error || s.error || p.error;
+  let error = t.error || s.error || pp.error;
   if(error) return { error };
   // Page表示判定
-  let isFetching = t.isFetching || s.isFetching || p.isFetching;
+  let isFetching = t.isFetching || s.isFetching || pp.isFetching;
   let isPermittedView = ctl.gender && ctl.classification && ctl.event && ctl.subdivision && ctl.competitionGroup;
   // 追加propsの設定
   let header = getHeaderProps(state);
@@ -121,7 +125,7 @@ const mapStateToProps = (state, ownProps) => {
     isPermittedView,
     header,
     players,
-    participatingPlayers: p.data,
+    participatingPlayers: pp.players,
   };
   return additionalProps;
 };
@@ -129,7 +133,7 @@ const mapDispatchToProps = dispatch => {
   return {
     // dispatching plain actions
     changeBibs: (value) => dispatch(pageControllerBibsAction(value)),
-    dispatchParticipatingPlayers: (gender, subdivision, group) => dispatch(participatingPlayersAction(gender, subdivision, group)),
+    dispatchParticipatingPlayers: (gender, subdivision, group, bibs) => dispatch(participatingPlayersAction(gender, subdivision, group, bibs)),
   }
 };
 

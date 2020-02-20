@@ -46,8 +46,10 @@ class Competition extends Component {
         <div className="content-body">
           <h2>採点する競技を選択して下さい。</h2>
           <div>
-            <SelectItem name="gender" value={this.props.gender} items={this.props.genderItems} change={this.props.changeGender} />
-            <SelectItem name="event" value={this.props.event} items={this.props.eventItems} change={this.props.changeEvent} />
+            性別：<SelectItem name="gender" value={this.props.gender} items={this.props.genderItems} onChange={this.props.changeGender} />
+          </div>
+          <div>
+            競技：<SelectItem name="event" value={this.props.event} items={this.props.eventItems} onChange={this.props.changeEvent} />
           </div>
           <button type="button" className="btn-secondary" onClick={e => this.checkNext(e)}>決定</button>
         </div>

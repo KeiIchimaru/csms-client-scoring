@@ -13,9 +13,6 @@ import {
   pageControllerSubdivisionAction,
   pageControllerCompetitionGroupAction,
 } from "../redux/actions/pageControllerAction";
-import {
-  participatingPlayersAction,
-} from "../redux/actions/tournament/composition/participatingPlayersAction";
 
 // React Component
 import Error from "../components/presentational/error";
@@ -30,13 +27,11 @@ class Subdivision extends Component {
   }
   redirectGroup(subdivision) {
     this.props.changeSubdivision(subdivision);
-    this.props.dispatchParticipatingPlayers(this.props.header.gender, subdivision);
     this.props.history.push('/group')
   }
   redirectPlayer(subdivision, competitionGroup) {
     this.props.changeSubdivision(subdivision);
     this.props.changeCompetitionGroup(competitionGroup);
-    this.props.dispatchParticipatingPlayers(this.props.header.gender, subdivision, competitionGroup);
     this.props.history.push('/player')
   }
   renderView() {
@@ -144,7 +139,6 @@ const mapDispatchToProps = dispatch => {
     // dispatching plain actions
     changeSubdivision: (value) => dispatch(pageControllerSubdivisionAction(value)),
     changeCompetitionGroup: (value) => dispatch(pageControllerCompetitionGroupAction(value)),
-    dispatchParticipatingPlayers: (gender, subdivision, group) => dispatch(participatingPlayersAction(gender, subdivision, group)),
   }
 };
 
