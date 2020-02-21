@@ -3,9 +3,8 @@ import { withRouter } from 'react-router';
 import { connect } from "react-redux";
 
 import { NOT_SELECTED, getMessage } from "../lib/ulib";
-import { TITLE_COMPETITION, MSG_REQUIRE_ALL_ITEMS } from "../lib/messages";
-
-import { getHeaderProps } from "../lib/props/headerProps";
+import { getHeaderProps, getStateError, getFetching } from "../lib/propsLib";
+import * as msg from "../lib/messages";
 
 // Redux Action
 import {
@@ -29,14 +28,14 @@ import SelectItem from "../components/presentational/selectItem";
 // Main
 class Competition extends Component { 
   componentDidMount() {
-    document.title = getMessage(TITLE_COMPETITION);
+    document.title = getMessage(msg.TITLE_COMPETITION);
   }
   checkNext(e) {
     if(this.props.gender && this.props.classification && this.props.event) {
       this.props.getSubdivisions(this.props.gender, this.props.classification, this.props.event);
       this.props.history.push('/subdivision');
     } else {
-      this.props.alert.show(getMessage(MSG_REQUIRE_ALL_ITEMS));
+      this.props.alert.show(getMessage(msg.MSG_REQUIRE_ALL_ITEMS));
     }
   }
   renderView() {
@@ -78,10 +77,10 @@ const mapStateToProps = (state, ownProps) => {
   let ctl = state.pageController;
   let t = state.tournament.composition.tournamentEvent;
   // API error判定
-  let error = t.error;
+  let error = getStateError(state);
   if(error) return { error };
   // Page表示判定
-  let isFetching = t.isFetching;
+  let isFetching = getFetching(state);
   let isPermittedView = true;
   // 以下の内容がpropsに追加される。（更新不可）
   // 第２引数にownPropsを指定できるが、ownPropsの内容でadditionalPropsの内容を変えたい場合に指定する。（additionalPropsはpropsに追加される）

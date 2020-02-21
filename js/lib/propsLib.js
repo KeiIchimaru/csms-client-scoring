@@ -1,5 +1,21 @@
-import { getName, NOT_SELECTED } from "../../lib/ulib"
-  
+import { getName, NOT_SELECTED } from "./ulib"
+
+export const getStateError = (state) => {
+  let c = state.tournament.composition;
+  let m = state.tournament.management;
+  return  c.tournamentEvent.error ||
+          c.participatingPlayers.error ||
+          c.eventResult.error ||
+          m.subdivisions.error;
+};
+export const getFetching = (state) => {
+  let c = state.tournament.composition;
+  let m = state.tournament.management;
+  return  c.tournamentEvent.isFetching ||
+          c.participatingPlayers.isFetching ||
+          c.eventResult.isFetching ||
+          m.subdivisions.isFetching;
+}
 export const getHeaderProps = (state) => {
   let ctl = state.pageController;
   let d = state.tournament.management.day;
@@ -50,3 +66,4 @@ export const getHeaderProps = (state) => {
       participatingPlayer
   };
 };
+export const isValidityPlayer = (participatingPlayer) => (participatingPlayer && participatingPlayer.validity == 1);

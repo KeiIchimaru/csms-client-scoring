@@ -3,9 +3,9 @@ import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import { NOT_SELECTED, getMessage } from "../lib/ulib";
-import { TITLE_COMPETITION, TITLE_SUBDIVISION, TITLE_GROUP, TITLE_PLAYER } from "../lib/messages";
-import { getHeaderProps } from "../lib/props/headerProps";
+import { getMessage } from "../lib/ulib";
+import { getHeaderProps, getStateError, getFetching, isValidityPlayer } from "../lib/propsLib";
+import * as msg from "../lib/messages";
 
 // Redux Action
 import {
@@ -29,7 +29,7 @@ class Player extends Component {
     this.redirectInput = this.redirectInput.bind(this);
   }
   componentDidMount() {
-    document.title = getMessage(TITLE_PLAYER);
+    document.title = getMessage(msg.TITLE_PLAYER);
     let h = this.props.header;
     // ブラウザのリロードを押された場合、stateはクリアされる。(redirectの前にcallされる)
     if(h.day) {
@@ -41,16 +41,45 @@ class Player extends Component {
     this.props.history.push('/input')
   }
   renderView() {
-    let h = this.props.header;
-    const players = this.props.players.map((player, i) => 
-      <tr key={`${Player.displayName}_${i}`}>
-        <ParticipatingPlayer event={this.props.header.event} player={player} participatingPlayer={this.props.participatingPlayers[player.bibs]} onClick={this.redirectInput} />
+    let numberOfPlayer = 0;
+    let numberOfActed = 0;
+    let teamScore = 0.0;
+    const players = this.props.players.map((p, i) => {
+      let pp = this.props.participatingPlayers[p.bibs];
+      let validity = isValidityPlayer(pp);
+      let style = (validity ? null : "abstention" );
+      if(validity) {
+        numberOfPlayer += 1;
+        let score = pp.scores[this.props.header.event]
+        if(score) {
+          numberOfActed += 1;
+          teamScore += score.event_score;
+        }
+      }
+      return (
+      <tr key={`${Player.displayName}_${i}`} className={style} >
+        <ParticipatingPlayer event={this.props.header.event} player={p} participatingPlayer={pp} onClick={this.redirectInput} />
       </tr>
-    );
+      )
+    });
+    // チーム得点
+
+    // 承認ボタンの表示
+    let confirmBox;
+    if(numberOfPlayer > 0 && numberOfPlayer == numberOfActed) {
+      confirmBox = (
+        <div>
+          <label>
+            <input type="checkbox" name="confirm" />{getMessage(msg.MSG_CONFIRM)}
+          </label>
+          <button type="button" className="btn-secondary" onClick={e => this.checkNext(e)}>{getMessage(msg.TXT_REGISTER)}</button>
+        </div>
+      );
+    }
     let navi = [
-      [getMessage(TITLE_COMPETITION), "/"],
-      [getMessage(TITLE_SUBDIVISION), "/subdivision"],
-      [getMessage(TITLE_GROUP), "/group"],
+      [getMessage(msg.TITLE_COMPETITION), "/"],
+      [getMessage(msg.TITLE_SUBDIVISION), "/subdivision"],
+      [getMessage(msg.TITLE_GROUP), "/group"],
     ];
     return (
       <div className="player">
@@ -60,7 +89,7 @@ class Player extends Component {
           <table className="w-100">
             <thead>
               <tr>
-                <th>番</th>
+                <th className="boderLeft2">番</th>
                 <th>氏名</th>
                 <th className="actingOrderTitle">演技順</th>
                 <th className="boderLeft2">D2</th>
@@ -72,15 +101,21 @@ class Player extends Component {
                 <th className="boderLeft2">E計</th>
                 <th>合計</th>
                 <th>減点</th>
-                <th className="boderLeft2">決定点</th>
+                <th className="boderLeft2 boderRight2">決定点</th>
               </tr>
             </thead>
             <tbody>
               {players}
+              <tr>
+                <td className="teamTotalNull" colSpan="9"></td>
+                <td className="teamTotalLabel" colSpan="3">チーム得点</td>
+                <td className="teamTotal">{teamScore}</td>
+              </tr>
             </tbody>
           </table>
         </div>
-        <div  className="content-footer">
+        <div className="content-footer">
+          {confirmBox}
         </div>
       </div>
     );
@@ -107,14 +142,12 @@ class Player extends Component {
 const mapStateToProps = (state, ownProps) => {
   // state略号設定
   let ctl = state.pageController;
-  let t = state.tournament.composition.tournamentEvent;
-  let s = state.tournament.management.subdivisions;
   let pp = state.tournament.composition.participatingPlayers;
   // API error判定
-  let error = t.error || s.error || pp.error;
+  let error = getStateError(state);
   if(error) return { error };
   // Page表示判定
-  let isFetching = t.isFetching || s.isFetching || pp.isFetching;
+  let isFetching = getFetching(state);
   let isPermittedView = ctl.gender && ctl.classification && ctl.event && ctl.subdivision && ctl.competitionGroup;
   // 追加propsの設定
   let header = getHeaderProps(state);

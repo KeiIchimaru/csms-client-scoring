@@ -1,6 +1,32 @@
 @charset "utf-8";
 /* CSS Document */
-.content-header {
+button {
+  width: 200px;
+}
+label {
+  display: inline-block;
+  position: relative;
+  padding-left: 1em;
+}
+label input {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+}
+.loading {
+  max-width: 50%;
+  margin: 0 auto;
+  display: table;
+}
+.loading .image {
+  display: table-cell;
+  height: 300px;
+  vertical-align: middle;
+  text-align: center;
+}
+.content-header, .content-footer {
   width: 100%;
   padding: 10px;;
 }
@@ -44,7 +70,11 @@
   margin-right: auto;
   text-align: center;
 }
-.content-body table, .content-body td, .content-body th {
+.content-footer  {
+  font-size: 1.5rem;
+  text-align: center;
+}
+.content-body td, .content-body th {
   border: 1px black solid;
 }
 .content-body table {
@@ -90,6 +120,9 @@
 .score {
   width: 2.5rem;
 }
+.abstention {
+  background-color: rgb(200, 200, 200);
+}
 
 /* PAGE: Competition */
 .competition .content-body {
@@ -108,7 +141,6 @@
 .competition .content-body button {
   margin-top: 40px;
   margin-bottom: 20px;
-  width: 100px;
 }
 
 /* PAGE: Subdivision */
@@ -122,24 +154,45 @@
 }
 
 /* PAGE: Player */
-.player table {
+.player table tr th {
+  border-top-width: 2px;
+  border-bottom-width: 2px;
+}
+.player .boderLeft2 {
+  border-left-width: 2px;
+}
+.player .boderRight2 {
+  border-right-width: 2px;
+}
+.player .teamTotalNull {
+  border-top-width: 2px;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  background-color: white;
+}
+.player .teamTotalLabel {
   border-width: 2px;
 }
-.player table tr th {
-  border-bottom-width: 2px;
+.player .teamTotal {
+  border-width: 2px;
+}
+.player .content-footer div {
+  margin-top: 20px;
+  vertical-align: middle;
 }
 
 /* PAGE: Input */
 .input table {
   width: 100%;
-  border-width: 2px;
+  border: 2px black solid;
 }
 .input table tr th {
   width: 100px;
   border-bottom-width: 1px;
 }
 .input table tbody tr td input, .input table tbody tr td div {
-  font-size: 3.0rem;
+  font-size: 2.4rem;
   width: 6rem;
 }
 .input .participatingPlayer {

@@ -9,6 +9,7 @@ export const MESSAGES = {
 
     [msg.TXT_CANCEL]: "キャンセル",
     [msg.TXT_RETURN]: "戻る",
+    [msg.TXT_REGISTER]: "登録",
 
     [msg.TXT_COMPETITION_GROUP]: "組",
     [msg.TXT_ORGANIZATION_NAME]: "学校名",
@@ -20,5 +21,7 @@ export const MESSAGES = {
 
     [msg.MSG_REQUIRE_ALL_ITEMS]: "全ての項目を指定して下さい。",
     [msg.MSG_D1_D2_DIFFERENT_SCORES]: "D1,D2の得点が異なります。調整して下さい。",
+    [msg.MSG_NOT_CHANGED]: "採点は変更されていません。戻るにはキャンセルをタッチして下さい。",
+    [msg.MSG_CONFIRM]: "採点内容を確認しました。",
     
 }

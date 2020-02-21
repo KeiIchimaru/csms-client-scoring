@@ -5,11 +5,9 @@ import { MESSAGES } from "./_messageText";
 export function getMessage(id) {
   return MESSAGES[id];
 };
-
 export function getDisplayTime(time) {
   return time.toString().slice(0,5);
 };
-
 export function getResponceError(response) {
   return {
     url: response.config.url,
@@ -18,7 +16,6 @@ export function getResponceError(response) {
     message: response.data.error
   }
 };
-
 export function isDict(v) {
   return typeof v === 'object' && v !== null && !(v instanceof Array) && !(v instanceof Date);
 }
@@ -50,4 +47,7 @@ export function isAllEntered(items) {
     return true;
   }
   return false;
+}
+export function round(value, ndigits) {
+  return Math.round(value * ndigits) / ndigits
 }

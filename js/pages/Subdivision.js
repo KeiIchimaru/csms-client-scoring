@@ -4,8 +4,8 @@ import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
 import { getMessage, getDisplayTime, getOrganizationName } from "../lib/ulib";
-import { TITLE_COMPETITION, TITLE_SUBDIVISION } from "../lib/messages";
-import { getHeaderProps } from "../lib/props/headerProps";
+import { getHeaderProps, getStateError, getFetching } from "../lib/propsLib";
+import * as msg from "../lib/messages";
 
 // Redux Action
 import {
@@ -23,7 +23,7 @@ import ContentnNavi from "../components/presentational/contentnNavi";
 // Main
 class Subdivision extends Component {
   componentDidMount() {
-    document.title = getMessage(TITLE_SUBDIVISION);
+    document.title = getMessage(msg.TITLE_SUBDIVISION);
   }
   redirectGroup(subdivision) {
     this.props.changeSubdivision(subdivision);
@@ -71,7 +71,7 @@ class Subdivision extends Component {
       )
     );
     let navi = [
-      [getMessage(TITLE_COMPETITION), '/'],
+      [getMessage(msg.TITLE_COMPETITION), '/'],
     ];
     return (
     <div className="subdivision">
@@ -117,10 +117,10 @@ const mapStateToProps = (state, ownProps) => {
   let t = state.tournament.composition.tournamentEvent;
   let s = state.tournament.management.subdivisions;
   // API error判定
-  let error = t.error || s.error;
+  let error = getStateError(state);
   if(error) return { error };
   // Page表示判定
-  let isFetching = t.isFetching || s.isFetching;
+  let isFetching = getFetching(state);
   let isPermittedView = ctl.gender && ctl.classification && ctl.event;
   // 追加propsの設定
   let header = getHeaderProps(state);

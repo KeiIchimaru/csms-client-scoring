@@ -4,8 +4,8 @@ import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
 import { getMessage, getOrganizationName } from "../lib/ulib";
+import { getHeaderProps, getStateError, getFetching } from "../lib/propsLib";
 import * as msg from "../lib/messages";
-import { getHeaderProps } from "../lib/props/headerProps";
 
 // Redux Action
 import {
@@ -132,10 +132,10 @@ const mapStateToProps = (state, ownProps) => {
   let s = state.tournament.management.subdivisions;
   let pp = state.tournament.composition.participatingPlayers;
   // API error判定
-  let error = t.error || s.error || pp.error;
+  let error = getStateError(state);
   if(error) return { error };
   // Page表示判定
-  let isFetching = t.isFetching || s.isFetching || pp.isFetching;
+  let isFetching = getFetching(state);
   let isPermittedView = ctl.gender && ctl.classification && ctl.event && ctl.subdivision;
   // 追加propsの設定
   let header = getHeaderProps(state);

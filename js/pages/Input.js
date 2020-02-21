@@ -3,15 +3,9 @@ import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import { getMessage, isAllEntered } from "../lib/ulib";
-import {
-  TITLE_INPUT,
-  TXT_CANCEL,
-  TXT_RETURN,
-  MSG_REQUIRE_ALL_ITEMS,
-  MSG_D1_D2_DIFFERENT_SCORES,
-} from "../lib/messages";
-import { getHeaderProps } from "../lib/props/headerProps";
+import { getMessage, isAllEntered, round } from "../lib/ulib";
+import { getHeaderProps, getStateError, getFetching } from "../lib/propsLib";
+import * as msg from "../lib/messages";
 
 // Redux Action
 import { participatingPlayersAction } from "../redux/actions/tournament/composition/participatingPlayersAction";
@@ -27,76 +21,98 @@ import PlayerName from "../components/presentational/playerName";
 
 function calculateScore(state) {
   let ndigits = 100;
-  let d = (state.d1 + state.d2) / 2.0;
-  d = Math.round(d * ndigits) / ndigits;
+  let d = round((state.d1 + state.d2) / 2.0, ndigits);
   let ee = [state.e1, state.e2, state.e3, state.e4];
-  let et = ee.reduce((ttl, v) => ttl + v) - Math.max(...ee) - Math.min(...ee);
-  let e = (et / 2.0);
-  e = Math.round(e * ndigits) / ndigits;
-  let score = d + e - state.penalty;
+  let et = round(ee.reduce((ttl, v) => ttl + v) - Math.max(...ee) - Math.min(...ee), ndigits);
+  let e = round((et / 2.0), ndigits);
+  let score = round(d + e - state.penalty, ndigits);
   let data = { ...state, et, e, score };
   return data;
 }
-
+/*
+  mapStateToProps(players=3) →　mapDispatchToProps →　constructor →　render →　componentDidMount →　
+  dispatchParticipatingPlayers →　
+  mapStateToProps(players=0) → componentDidUpdate →　mapStateToProps(players=1) →　render → componentDidUpdate(setState) →
+  render → componentDidUpdate
+*/
 class Input extends Component {
   constructor(props) {
     super(props);
-    console.log("constructor");
-    let pp = props.header.participatingPlayer;
-    // this.state更新
-    if(pp && pp.scores && pp.scores[props.header.event]) {
-      this.state = JSON.parse(pp.scores[props.header.event].constitution);
-    } else {
-      this.state = {
+    this.state = {
+      isChange: false,
+      isUpdate: false,
+      input: {
         d1: null,
         d2: null,
         e1: null,
         e2: null,
         e3: null,
         e4: null,
-        penalty: null
-      }  
-    }
+        penalty: null  
+      }
+    }  
     this.handleChangeForm = this.handleChangeForm.bind(this);
   }
   componentDidMount() {
-    console.log("componentDidMount");
-    document.title = getMessage(TITLE_INPUT);
+    document.title = getMessage(msg.TITLE_INPUT);
     let h = this.props.header;
     // ブラウザのリロードを押された場合、stateはクリアされる。(redirectの前にcallされる)
     if(h.day) {
       this.props.dispatchParticipatingPlayers(h.gender, h.subdivision.id, h.competitionGroup.id, h.player.bibs);
-      console.log("dispatchParticipatingPlayers");
+    }
+  }
+  componentDidUpdate(prevProps) {
+    // mapStateToPropsでstateがpropsに変換されている。
+    let ppp = prevProps.header.participatingPlayer;
+    let pp = this.props.header.participatingPlayer;
+    if(typeof ppp === 'undefined' && pp) {
+      // this.state更新
+      if(pp.scores && pp.scores[this.props.header.event]) {
+        this.setState({
+          isChange: false,
+          input: JSON.parse(pp.scores[this.props.header.event].constitution)
+        });
+      }
+    }
+    // 更新後に画面遷移する。
+    if(!this.props.isFetching && this.state.isUpdate) {
+      this.props.history.push("/player");
     }
   }
   handleChangeForm(e) {
-    let inputData = { [e.target.name]: parseFloat(e.target.value), };
-    this.setState(inputData);
-    let newState = { ...this.state, ...inputData };
-    if(isAllEntered(newState)) {
-      this.setState(calculateScore(newState));
+    let inputData = { ...this.state.input, [e.target.name]: parseFloat(e.target.value) };
+    this.setState({ isChange: true, input: inputData });
+    if(isAllEntered(inputData)) {
+      this.setState({ input: calculateScore(inputData) });
     }
   }
   doUpdate() {
-    let msg = MSG_REQUIRE_ALL_ITEMS;
-    if(isAllEntered(this.state)) {
-      if(this.state.d1 == this.state.d2) {
-        this.props.dispatchEventResultRegisterAction(this.props.header, this.state);
-        return true;  
+    let message;
+    if(isAllEntered(this.state.input)) {
+      if(this.state.input.d1 == this.state.input.d2) {
+        if(this.state.isChange) {
+          this.props.dispatchEventResultRegisterAction(this.props.header, this.state.input);
+          this.setState({ isUpdate: true, });
+          return true;  
+        } else {
+          message = msg.MSG_NOT_CHANGED;
+        }
+      } else {
+        message = msg.MSG_D1_D2_DIFFERENT_SCORES;
       }
-      msg = MSG_D1_D2_DIFFERENT_SCORES;
+    } else {
+      message = msg.MSG_REQUIRE_ALL_ITEMS
     }
-    this.props.alert.show(getMessage(msg));
+    this.props.alert.show(getMessage(message));
     return false;
   }
   renderView() {
-    let s = this.state;
-    console.log( "renderView", s);
+    let s = this.state.input;
     let h = this.props.header;
     let pp = h.participatingPlayer;
     let navi = [
-      [getMessage(TXT_CANCEL), "/player"],
-      [getMessage(TXT_RETURN), "/player", () => this.doUpdate()],
+      [getMessage(msg.TXT_CANCEL), "/player"],
+      [getMessage(msg.TXT_RETURN), null, () => this.doUpdate()],
     ];
     return (
       <div className="input">
@@ -164,17 +180,13 @@ class Input extends Component {
   }
 };
 const mapStateToProps = (state, ownProps) => {
-  console.log("mapStateToProps");
   // state略号設定
   let ctl = state.pageController;
-  let t = state.tournament.composition.tournamentEvent;
-  let s = state.tournament.management.subdivisions;
-  let pp = state.tournament.composition.participatingPlayers;
   // API error判定
-  let error = t.error || s.error || pp.error;
+  let error = getStateError(state);
   if(error) return { error };
   // Page表示判定
-  let isFetching = t.isFetching || s.isFetching || pp.isFetching;
+  let isFetching = getFetching(state);
   let isPermittedView = ctl.gender && ctl.classification && ctl.event && ctl.subdivision && ctl.competitionGroup && ctl.bibs;
   // 追加propsの設定
   let header = getHeaderProps(state);
@@ -187,11 +199,10 @@ const mapStateToProps = (state, ownProps) => {
   return additionalProps;
 };
 const mapDispatchToProps = dispatch => {
-  console.log("mapDispatchToProps");
   return {
     // dispatching plain actions
     dispatchParticipatingPlayers: (gender, subdivision, group, bibs) => dispatch(participatingPlayersAction(gender, subdivision, group, bibs)),
-    dispatchEventResultRegisterAction: (header, data) => dispatch(eventResultRegisterAction(header, data)),
+    dispatchEventResultRegisterAction: (header, data, jumpTo) => dispatch(eventResultRegisterAction(header, data)),
   }
 };
 

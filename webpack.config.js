@@ -24,7 +24,11 @@ module.exports = {
         use: {
           loader: 'babel-loader'
         }
-      }
+      },
+      {
+        test: /\.(jpg|png|gif)$/,
+        loaders: 'url-loader'
+      },      
     ]
   },
   performance: {

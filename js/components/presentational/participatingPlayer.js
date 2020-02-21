@@ -1,12 +1,16 @@
 import React from 'react';
 
+import { isValidityPlayer } from "../../lib/propsLib";
+
 // React Component
 import PlayerName from "./playerName";
 
-const shortFrom = (score) => (
-  <td>{score ? score.event_score : "演技前"}</td>
+const displayValidity = (validity) => (validity ? "演技前" : "棄権");
+
+const shortFrom = (validity, score) => (
+  <td>{score ? score.event_score : displayValidity(validity)}</td>
 );
-const longFrom = (score) => {
+const longFrom = (validity, score) => {
   let s = score ? JSON.parse(score.constitution) : null;
   return (
   <>
@@ -19,19 +23,27 @@ const longFrom = (score) => {
     <td className="boderLeft2">{score ? s.et : null}</td>
     <td>{score ? s.e : null}</td>
     <td>{score ? s.penalty : null}</td>
-    <td className="boderLeft2">{score ? score.event_score : "演技前"}</td>
+    <td className="boderLeft2 boderRight2">{score ? score.event_score : displayValidity(validity)}</td>
   </>
 )};
 const participatingPlayer = (props) => {
   let p = props.player;
   let pp = props.participatingPlayer;
+  let validity = isValidityPlayer(pp);
   let score = (pp ? pp.scores[props.event] : null)
-  let displayScore = (props.isShort ? shortFrom(score) : longFrom(score));
+  let displayScore = (props.isShort ? shortFrom(validity, score) : longFrom(validity, score));
   return (
     <>
-      <td className="bibs linkBibs" onClick={e => { props.competitionGroup ? props.onClick(props.competitionGroup, p.bibs) : props.onClick(p.bibs)}}>
+      { validity &&
+      <td className="bibs boderLeft2 linkBibs" onClick={e => { props.competitionGroup ? props.onClick(props.competitionGroup, p.bibs) : props.onClick(p.bibs)}}>
         {pp ? parseInt(pp.bibs) : ""}
       </td>
+      }
+      { !validity &&
+      <td className="bibs boderLeft2">
+        {pp ? parseInt(pp.bibs) : ""}
+      </td>
+      }
       <td className="playerName">
         <div>
           <PlayerName player={pp} />
