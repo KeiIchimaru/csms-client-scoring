@@ -4,16 +4,21 @@ import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
 import { getMessage } from "../lib/ulib";
-import { getHeaderProps, getStateError, getFetching, isValidityPlayer } from "../lib/propsLib";
+import {
+  CSS_TOP_NUMBER,
+  getHeaderProps,
+  getStateError,
+  getFetching,
+  isValidityPlayer,
+  isTopNumber,
+  getEventTeamScore
+} from "../lib/propsLib";
 import * as msg from "../lib/messages";
 
 // Redux Action
-import {
-  pageControllerBibsAction,
-} from "../redux/actions/pageControllerAction";
-import {
-  participatingPlayersAction,
-} from "../redux/actions/tournament/composition/participatingPlayersAction";
+import { pageControllerBibsAction } from "../redux/actions/pageControllerAction";
+import { participatingPlayersAction } from "../redux/actions/tournament/composition/participatingPlayersAction";
+import { eventResultConfirmAction } from "../redux/actions/tournament/composition/eventResultAction";
 
 // React Component
 import Error from "../components/presentational/error";
@@ -26,7 +31,19 @@ class Player extends Component {
   constructor(props) {
     super(props);
     // 参照：https://qiita.com/konojunya/items/fc0cfa6a56821e709065
+    // 他のコンポーネントに引き渡すメソッドについてか以下が必要
+    this.checkConfirm = this.checkConfirm.bind(this);
     this.redirectInput = this.redirectInput.bind(this);
+  }
+  checkConfirm() {
+    if(this.props.requiredConfirm) {
+      this.props.alert.show(getMessage(msg.MSG_REQUIRED_CONFIRM));
+    }
+    return !this.props.requiredConfirm;
+  }
+  redirectInput(bibs) {
+    this.props.changeBibs(bibs);
+    this.props.history.push('/input')
   }
   componentDidMount() {
     document.title = getMessage(msg.TITLE_PLAYER);
@@ -36,50 +53,45 @@ class Player extends Component {
       this.props.dispatchParticipatingPlayers(h.gender, h.subdivision.id, h.competitionGroup.id);
     }
   }
-  redirectInput(bibs) {
-    this.props.changeBibs(bibs);
-    this.props.history.push('/input')
+  doConfierm(e) {
+    let confirm = document.getElementById('confirm');
+    if(!confirm.checked) {
+      this.props.alert.show(getMessage(msg.MSG_REQUIRED_CONFIRM));
+    } else {
+      let h = this.props.header;
+      let players = this.props.players.map((p, i) => this.props.participatingPlayers[p.bibs].player_id);
+      this.props.dispatchEventResultConfirmAction(h, players, 
+        () => this.props.dispatchParticipatingPlayers(h.gender, h.subdivision.id, h.competitionGroup.id)
+      );
+    }
   }
   renderView() {
-    let numberOfPlayer = 0;
-    let numberOfActed = 0;
-    let teamScore = 0.0;
     const players = this.props.players.map((p, i) => {
       let pp = this.props.participatingPlayers[p.bibs];
-      let validity = isValidityPlayer(pp);
-      let style = (validity ? null : "abstention" );
-      if(validity) {
-        numberOfPlayer += 1;
-        let score = pp.scores[this.props.header.event]
-        if(score) {
-          numberOfActed += 1;
-          teamScore += score.event_score;
-        }
-      }
+      let style = (isValidityPlayer(pp) ? null : "abstention" );
+      let scoreStyle = (isTopNumber(p.bibs, this.props.teamScore) ? CSS_TOP_NUMBER : null);
       return (
       <tr key={`${Player.displayName}_${i}`} className={style} >
-        <ParticipatingPlayer event={this.props.header.event} player={p} participatingPlayer={pp} onClick={this.redirectInput} />
+        <ParticipatingPlayer event={this.props.header.event} player={p} participatingPlayer={pp} onClick={this.redirectInput} scoreStyle={scoreStyle} />
       </tr>
       )
     });
-    // チーム得点
-
     // 承認ボタンの表示
     let confirmBox;
-    if(numberOfPlayer > 0 && numberOfPlayer == numberOfActed) {
+    if(this.props.requiredConfirm) {
       confirmBox = (
         <div>
           <label>
-            <input type="checkbox" name="confirm" />{getMessage(msg.MSG_CONFIRM)}
+            <input type="checkbox" id="confirm" name="confirm" />{getMessage(msg.MSG_CONFIRM)}
           </label>
-          <button type="button" className="btn-secondary" onClick={e => this.checkNext(e)}>{getMessage(msg.TXT_REGISTER)}</button>
+          <button type="button" className="btn-secondary" onClick={e => this.doConfierm(e)}>{getMessage(msg.TXT_REGISTER)}</button>
         </div>
       );
     }
     let navi = [
-      [getMessage(msg.TITLE_COMPETITION), "/"],
-      [getMessage(msg.TITLE_SUBDIVISION), "/subdivision"],
-      [getMessage(msg.TITLE_GROUP), "/group"],
+      [getMessage(msg.TITLE_COMPETITION), "/", () => this.checkConfirm()],
+      [getMessage(msg.TITLE_SUBDIVISION), "/subdivision", () => this.checkConfirm()],
+      [getMessage(msg.TITLE_GROUP), "/group", () => this.checkConfirm()],
     ];
     return (
       <div className="player">
@@ -109,7 +121,7 @@ class Player extends Component {
               <tr>
                 <td className="teamTotalNull" colSpan="9"></td>
                 <td className="teamTotalLabel" colSpan="3">チーム得点</td>
-                <td className="teamTotal">{teamScore}</td>
+                <td className="teamTotal">{this.props.teamScore.score}</td>
               </tr>
             </tbody>
           </table>
@@ -152,6 +164,12 @@ const mapStateToProps = (state, ownProps) => {
   // 追加propsの設定
   let header = getHeaderProps(state);
   let players = (header.competitionGroup ? header.competitionGroup.players : {}); 
+  // チーム得点の集計
+  let teamScore = getEventTeamScore(ctl.event, players, pp.players);
+  let requiredConfirm = (teamScore.numberOfPlayer > 0 &&
+                        teamScore.numberOfPlayer == teamScore.numberOfActed &&
+                        teamScore.numberOfPlayer > teamScore.numberOfConfirmed
+  );
   let additionalProps = {
     error,
     isFetching,
@@ -159,6 +177,8 @@ const mapStateToProps = (state, ownProps) => {
     header,
     players,
     participatingPlayers: pp.players,
+    teamScore,
+    requiredConfirm,
   };
   return additionalProps;
 };
@@ -167,6 +187,7 @@ const mapDispatchToProps = dispatch => {
     // dispatching plain actions
     changeBibs: (value) => dispatch(pageControllerBibsAction(value)),
     dispatchParticipatingPlayers: (gender, subdivision, group, bibs) => dispatch(participatingPlayersAction(gender, subdivision, group, bibs)),
+    dispatchEventResultConfirmAction: (header, players, next) => dispatch(eventResultConfirmAction(header, players, next)),
   }
 };
 

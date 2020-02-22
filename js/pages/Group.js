@@ -57,21 +57,24 @@ class Group extends Component {
       }
     });
     const competitionGroups = this.props.competitionGroups.map((competitionGroup, i) => 
-      competitionGroup.players.map((player, j) => 
-        <tr key={`${Group.displayName}_${i}_${j}`}>
-          {j == 0 &&
-            <>
-              <td className="linkPlayer" rowSpan={competitionGroup.players.length} onClick={e => this.redirectPlayer(competitionGroup.id)}>
-                {competitionGroup.number}
-              </td>
-              <td className="organizationName" rowSpan={competitionGroup.players.length}>
-                {getOrganizationName(competitionGroup.organization_name)}
-              </td>
-            </>
-          }
-          <ParticipatingPlayer event={this.props.header.event} competitionGroup={competitionGroup.id} player={player} participatingPlayer={this.props.participatingPlayers[player.bibs]} onClick={this.redirectInput} isShort={true} />
-        </tr>
-      )
+      competitionGroup.players.map((player, j) => {
+        let scoreStyle = null;
+        return (
+          <tr key={`${Group.displayName}_${i}_${j}`}>
+            {j == 0 &&
+              <>
+                <td className="linkPlayer" rowSpan={competitionGroup.players.length} onClick={e => this.redirectPlayer(competitionGroup.id)}>
+                  {competitionGroup.number}
+                </td>
+                <td className="organizationName" rowSpan={competitionGroup.players.length}>
+                  {getOrganizationName(competitionGroup.organization_name)}
+                </td>
+              </>
+            }
+            <ParticipatingPlayer event={this.props.header.event} competitionGroup={competitionGroup.id} player={player} participatingPlayer={this.props.participatingPlayers[player.bibs]} onClick={this.redirectInput} scoreStyle={scoreStyle} isShort={true} />
+          </tr>
+        );
+      })
     );
     let navi = [
       [getMessage(msg.TITLE_COMPETITION), "/"],

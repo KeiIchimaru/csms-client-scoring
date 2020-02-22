@@ -42,7 +42,7 @@ export function getOrganizationName(organizationName) {
 export function isAllEntered(items) {
   if(items && isDict(items)) {
     for (let key in items) {
-      if(!items[key] || items[key] == null) return false;
+      if(items[key] == null) return false;
     };
     return true;
   }

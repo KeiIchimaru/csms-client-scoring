@@ -4,9 +4,8 @@ const naviClicked = (history, item) => {
   let doJump = true;
   if(item.length == 3) {
     doJump = item[2]();
-  } else {
-    if(doJump && item[1]) history.push(item[1]);
   }
+  if(doJump && item[1]) history.push(item[1]);
 }
 // props set by getHeaderProps
 const contentNavi = (props) => {

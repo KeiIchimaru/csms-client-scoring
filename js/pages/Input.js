@@ -50,7 +50,7 @@ class Input extends Component {
         e4: null,
         penalty: null  
       }
-    }  
+    };
     this.handleChangeForm = this.handleChangeForm.bind(this);
   }
   componentDidMount() {
@@ -202,7 +202,7 @@ const mapDispatchToProps = dispatch => {
   return {
     // dispatching plain actions
     dispatchParticipatingPlayers: (gender, subdivision, group, bibs) => dispatch(participatingPlayersAction(gender, subdivision, group, bibs)),
-    dispatchEventResultRegisterAction: (header, data, jumpTo) => dispatch(eventResultRegisterAction(header, data)),
+    dispatchEventResultRegisterAction: (header, data) => dispatch(eventResultRegisterAction(header, data)),
   }
 };
 

@@ -23,5 +23,6 @@ export const MESSAGES = {
     [msg.MSG_D1_D2_DIFFERENT_SCORES]: "D1,D2の得点が異なります。調整して下さい。",
     [msg.MSG_NOT_CHANGED]: "採点は変更されていません。戻るにはキャンセルをタッチして下さい。",
     [msg.MSG_CONFIRM]: "採点内容を確認しました。",
+    [msg.MSG_REQUIRED_CONFIRM]: "採点内容を確認して、登録をタッチして下さい。",
     
 }

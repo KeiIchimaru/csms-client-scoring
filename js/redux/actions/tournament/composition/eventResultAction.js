@@ -24,7 +24,7 @@
 export const eventResultRegisterAction = (header, data) => {
   return (dispatch) => {
     dispatch(eventResultRequestAction());
-    return  axios.get('/csrf-token')
+    return axios.get('/csrf-token')
     .then(res =>
       axios.post('/api/tournament/composition/result/register',
         {
@@ -42,10 +42,39 @@ export const eventResultRegisterAction = (header, data) => {
         }, {
           headers: { 'csrf-token': res.data.token },
         }
-    )).then(res =>
-        dispatch(eventResultSuccessAction())
+      )
+    ).then(res => 
+      dispatch(eventResultSuccessAction())
     ).catch(err =>
-        dispatch(eventResultFailureAction(err))
+      dispatch(eventResultFailureAction(err))
+    );
+  };
+};
+
+export const eventResultConfirmAction = (header, players, next=null) => {
+  return (dispatch) => {
+    dispatch(eventResultRequestAction());
+    return  axios.get('/csrf-token')
+    .then(res =>
+      axios.post('/api/tournament/composition/result/confirm',
+        {
+          header: {
+              gender: header.gender,
+              classification: header.classification,
+              event: header.event,
+              subdivision: header.subdivision.is,
+              competitionGroup: header.competitionGroup.id,
+          },
+          players
+        }, {
+          headers: { 'csrf-token': res.data.token },
+        }
+      )
+    ).then(res => {
+      if (next) next();
+      return dispatch(eventResultSuccessAction());
+    }).catch(err =>
+      dispatch(eventResultFailureAction(err))
     );
   };
 };

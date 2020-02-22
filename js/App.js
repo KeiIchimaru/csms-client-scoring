@@ -13,8 +13,6 @@ import Group from './pages/Group';
 import Player from './pages/Player';
 import Input from './pages/Input';
 
-import Loading from "./components/presentational/loading";
-
 // コンポーネントにデータをpropsとして引き継ぐ場合
 // <Route path='/subdivision' render={props => <Subdivision basename={basename} {...props} />} />
 // ...propsはスプレッド構文です。
