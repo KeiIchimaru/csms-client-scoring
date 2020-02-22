@@ -1,20 +1,5 @@
 @charset "utf-8";
 /* CSS Document */
-button {
-  width: 200px;
-}
-label {
-  display: inline-block;
-  position: relative;
-  padding-left: 1em;
-}
-label input {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-}
 .loading {
   max-width: 50%;
   margin: 0 auto;
@@ -40,6 +25,7 @@ label input {
   border: 1px black solid;
   background-color: darkseagreen;
 }
+
 .content-navi {
   width: 100%;
   font-size: 1.5rem;
@@ -63,15 +49,12 @@ label input {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+
 .content-body {
   width: 90%;
   font-size: 1.5rem;
   margin-left: auto;
   margin-right: auto;
-  text-align: center;
-}
-.content-footer  {
-  font-size: 1.5rem;
   text-align: center;
 }
 .content-body td, .content-body th {
@@ -90,6 +73,27 @@ label input {
 .content-body td {
   padding: 5px;
 }
+
+.content-footer  {
+  font-size: 1.5rem;
+  text-align: center;
+}
+.content-footer button {
+  width: 200px;
+}
+.content-footer label {
+  display: inline-block;
+  position: relative;
+  padding-left: 1em;
+}
+.content-footer label input {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+}
+
 .linkGroup, .linkPlayer, .linkBibs {
   width: 5rem;
   background: lightgoldenrodyellow; 
@@ -120,6 +124,9 @@ label input {
 .score {
   width: 2.5rem;
 }
+.top-number {
+  background-color: burlywood;
+}
 .abstention {
   background-color: rgb(200, 200, 200);
 }
@@ -141,6 +148,7 @@ label input {
 .competition .content-body button {
   margin-top: 40px;
   margin-bottom: 20px;
+  width: 200px;
 }
 
 /* PAGE: Subdivision */
