@@ -56,7 +56,7 @@ class Group extends Component {
         maxPlayerNumber = group.players.length;
       }
     });
-    const competitionGroups = this.props.competitionGroups.map((competitionGroup, i) => 
+    const htmlCompetitionGroups = this.props.competitionGroups.map((competitionGroup, i) => 
       competitionGroup.players.map((player, j) => {
         let scoreStyle = null;
         return (
@@ -85,7 +85,7 @@ class Group extends Component {
       <ContentHeader header={this.props.header} />
       <ContentnNavi navi={navi} history={this.props.history} />
       <div className="content-body">
-        <table className="w-100">
+        <table>
           <thead>
             <tr>
               <th rowSpan="2" className="competitionGroup">{getMessage(msg.TXT_COMPETITION_GROUP)}</th>
@@ -100,7 +100,7 @@ class Group extends Component {
             </tr>
           </thead>
           <tbody>
-            {competitionGroups}
+            {htmlCompetitionGroups}
           </tbody>
         </table>
       </div>
@@ -147,6 +147,7 @@ const mapStateToProps = (state, ownProps) => {
     error,
     isFetching,
     isPermittedView,
+    tournament: state.tournament.composition.tournament,
     header,
     competitionGroups,
     participatingPlayers: pp.players,

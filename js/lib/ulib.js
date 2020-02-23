@@ -1,5 +1,3 @@
-export const NOT_SELECTED = 0;
-
 import { MESSAGES } from "./_messageText";
 
 export function getMessage(id) {

@@ -194,6 +194,7 @@ const mapStateToProps = (state, ownProps) => {
     error,
     isFetching,
     isPermittedView,
+    tournament: state.tournament.composition.tournament,
     header,
   };
   return additionalProps;

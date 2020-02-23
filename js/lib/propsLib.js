@@ -1,4 +1,5 @@
-import { getName, NOT_SELECTED } from "./ulib"
+import { NOT_SELECTED } from "./constant";
+import { getName } from "./ulib"
 
 export const CSS_TOP_NUMBER = "top-number";
 

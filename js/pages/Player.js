@@ -66,7 +66,7 @@ class Player extends Component {
     }
   }
   renderView() {
-    const players = this.props.players.map((p, i) => {
+    const htmlPlayers = this.props.players.map((p, i) => {
       let pp = this.props.participatingPlayers[p.bibs];
       let style = (isValidityPlayer(pp) ? null : "abstention" );
       let scoreStyle = (isTopNumber(p.bibs, this.props.teamScore) ? CSS_TOP_NUMBER : null);
@@ -77,7 +77,7 @@ class Player extends Component {
       )
     });
     // 承認ボタンの表示
-    let confirmBox;
+    let htmlConfirmBox;
     if(this.props.requiredConfirm) {
       confirmBox = (
         <div>
@@ -98,7 +98,7 @@ class Player extends Component {
         <ContentHeader header={this.props.header} />
         <ContentnNavi navi={navi} history={this.props.history} />
         <div className="content-body">
-          <table className="w-100">
+          <table>
             <thead>
               <tr>
                 <th className="boderLeft2">番</th>
@@ -117,7 +117,7 @@ class Player extends Component {
               </tr>
             </thead>
             <tbody>
-              {players}
+              {htmlPlayers}
               <tr>
                 <td className="teamTotalNull" colSpan="9"></td>
                 <td className="teamTotalLabel" colSpan="3">チーム得点</td>
@@ -127,7 +127,7 @@ class Player extends Component {
           </table>
         </div>
         <div className="content-footer">
-          {confirmBox}
+          {htmlConfirmBox}
         </div>
       </div>
     );
@@ -174,6 +174,7 @@ const mapStateToProps = (state, ownProps) => {
     error,
     isFetching,
     isPermittedView,
+    tournament: state.tournament.composition.tournament,
     header,
     players,
     participatingPlayers: pp.players,

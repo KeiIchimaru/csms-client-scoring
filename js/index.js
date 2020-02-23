@@ -2,11 +2,16 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import App from './App';
 
-import { Provider } from 'react-redux'
-import store from './redux/store'
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
-import { transitions, positions, types, Provider as AlertProvider } from 'react-alert'
-import AlertTemplate from 'react-alert-template-basic'
+import {
+  transitions,
+  positions,
+  types,
+  Provider as AlertProvider
+} from 'react-alert';
+import AlertTemplate from 'react-alert-template-basic';
 
 // React CSS
 import styles from "../css/style.css";

@@ -3,9 +3,9 @@
    ************************************************************* */
 import { getResponceError } from "../../../../lib/ulib";
 import {
-  TOURNAMENT_EVENTS_REQUEST,
-  TOURNAMENT_EVENTS_SUCCESS,
-  TOURNAMENT_EVENTS_FAILURE
+  TOURNAMENT_EVENT_REQUEST,
+  TOURNAMENT_EVENT_SUCCESS,
+  TOURNAMENT_EVENT_FAILURE
 } from "../../../actions/actionTypes";
 
 const initialState = {
@@ -78,15 +78,15 @@ const _makeState = (state, action) => {
 
 const tournamentEvent = (state = initialState, action) => {
   switch (action.type) {
-    case TOURNAMENT_EVENTS_REQUEST: {
+    case TOURNAMENT_EVENT_REQUEST: {
       // Object.assign(target, ...sources)
       // 初めの引数を{}としているのはstateの内容を変更しない為
       return Object.assign({}, state, { isFetching: true });
     }
-    case TOURNAMENT_EVENTS_SUCCESS: {
+    case TOURNAMENT_EVENT_SUCCESS: {
       return _makeState(state, action);
     }
-    case TOURNAMENT_EVENTS_FAILURE: {
+    case TOURNAMENT_EVENT_FAILURE: {
       let error = getResponceError(action.error.response);
       return Object.assign({}, state, { error });
     }

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from "react-redux";
 
-import { NOT_SELECTED, getMessage } from "../lib/ulib";
+import { NOT_SELECTED } from "../lib/constant";
+import { getMessage } from "../lib/ulib";
 import { getHeaderProps, getStateError, getFetching } from "../lib/propsLib";
 import * as msg from "../lib/messages";
 
@@ -73,6 +74,7 @@ class Competition extends Component {
 }
 // for React-Redux
 const mapStateToProps = (state, ownProps) => {
+  console.log(state.tournament.composition.tournament);
   // state略号設定
   let ctl = state.pageController;
   let t = state.tournament.composition.tournamentEvent;
@@ -108,6 +110,7 @@ const mapStateToProps = (state, ownProps) => {
     error,
     isFetching,
     isPermittedView,
+    tournament: state.tournament.composition.tournament,
     header: getHeaderProps(state),
     gender: ctl.gender,
     classification,

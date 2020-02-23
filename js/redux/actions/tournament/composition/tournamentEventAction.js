@@ -3,22 +3,22 @@
    ************************************************************* */
 import axios from 'axios';
 import {
-  TOURNAMENT_EVENTS_REQUEST,
-  TOURNAMENT_EVENTS_SUCCESS,
-  TOURNAMENT_EVENTS_FAILURE
+  TOURNAMENT_EVENT_REQUEST,
+  TOURNAMENT_EVENT_SUCCESS,
+  TOURNAMENT_EVENT_FAILURE
 } from "../../actionTypes";
 
 // tournamentEvent
 const tournamentEventRequestAction = () => ({
-  type: TOURNAMENT_EVENTS_REQUEST,
+  type: TOURNAMENT_EVENT_REQUEST,
 });
 
 const tournamentEventSuccessAction = data => ({  
-  type: TOURNAMENT_EVENTS_SUCCESS,
+  type: TOURNAMENT_EVENT_SUCCESS,
   data
 });
 const tournamentEventFailureAction = error => ({
-  type: TOURNAMENT_EVENTS_FAILURE,
+  type: TOURNAMENT_EVENT_FAILURE,
   error
 });
 

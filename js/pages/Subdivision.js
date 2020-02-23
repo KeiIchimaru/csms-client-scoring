@@ -3,8 +3,16 @@ import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import { getMessage, getDisplayTime, getOrganizationName } from "../lib/ulib";
-import { getHeaderProps, getStateError, getFetching } from "../lib/propsLib";
+import {
+  getMessage,
+  getDisplayTime,
+  getOrganizationName
+} from "../lib/ulib";
+import {
+  getHeaderProps,
+  getStateError,
+  getFetching
+} from "../lib/propsLib";
 import * as msg from "../lib/messages";
 
 // Redux Action
@@ -36,7 +44,8 @@ class Subdivision extends Component {
   }
   renderView() {
     // 組の表示
-    const htmlGroup = (subdivision_id, competitionGroup) => (
+    const htmlGroup = (subdivision_id, competitionGroup) => {
+      return (
       <>
         <td className="linkPlayer" onClick={e => this.redirectPlayer(subdivision_id, competitionGroup.id)}>
           {competitionGroup.number}
@@ -48,7 +57,7 @@ class Subdivision extends Component {
           {Object.keys(competitionGroup.players).length}人
         </td>
       </>
-    );
+    )};
     // 班の表示
     // map() メソッドは、与えられた関数を配列のすべての要素に対して呼び出し、その結果からなる新しい配列を生成します。
     const htmlSubdivisions = this.props.subdivisions.map((subdivision, i) =>
@@ -78,7 +87,7 @@ class Subdivision extends Component {
       <ContentHeader header={this.props.header} />
       <ContentnNavi navi={navi} history={this.props.history} />
       <div className="content-body">
-        <table className="w-100">
+        <table>
           <thead>
             <tr><th>班</th><th>演技時間</th><th>組</th><th>学校名</th><th>選手</th></tr>
           </thead>
@@ -128,6 +137,7 @@ const mapStateToProps = (state, ownProps) => {
     error,
     isFetching,
     isPermittedView,
+    tournament: state.tournament.composition.tournament,
     header,
     subdivisions: s.data,
   };

@@ -19,9 +19,13 @@ export const DAY_REQUEST                            = 'DAY_REQUEST';
 export const DAY_SUCCESS                            = 'DAY_SUCCESS';
 export const DAY_FAILURE                            = 'DAY_FAILURE';
 
-export const TOURNAMENT_EVENTS_REQUEST              = 'TOURNAMENT_EVENTS_REQUEST';
-export const TOURNAMENT_EVENTS_SUCCESS              = 'TOURNAMENT_EVENTS_SUCCESS';
-export const TOURNAMENT_EVENTS_FAILURE              = 'TOURNAMENT_EVENTS_FAILURE';
+export const TOURNAMENT_REQUEST                     = 'TOURNAMENT_REQUEST';
+export const TOURNAMENT_SUCCESS                     = 'TOURNAMENT_SUCCESS';
+export const TOURNAMENT_FAILURE                     = 'TOURNAMENT_FAILURE';
+
+export const TOURNAMENT_EVENT_REQUEST              = 'TOURNAMENT_EVENT_REQUEST';
+export const TOURNAMENT_EVENT_SUCCESS              = 'TOURNAMENT_EVENT_SUCCESS';
+export const TOURNAMENT_EVENT_FAILURE              = 'TOURNAMENT_EVENT_FAILURE';
 
 export const SUBDIVISIONS_REQUEST                   = 'SUBDIVISIONS_REQUEST';
 export const SUBDIVISIONS_SUCCESS                   = 'SUBDIVISIONS_SUCCESS';
