@@ -15,11 +15,15 @@
   width: 100%;
   padding: 10px;;
 }
-.content-header h2 {
+.content-header h1 {
   font-size: 1.5rem;
+}
+.content-header h2 {
+  font-size: 1.2rem;
   text-align: center;
 }
 .content-header h3 {
+  font-size: 1.2rem;
   text-align: center;
   color: rgb(25, 25, 25);
   border: 1px black solid;
@@ -29,7 +33,7 @@
 .content-navi {
   width: 100%;
   font-size: 1.5rem;
-  margin-top: 10px;
+  margin-top: 0px;
   margin-bottom: 20px;
 }
 .content-navi-item {
@@ -51,7 +55,7 @@
 }
 
 .content-body {
-  width: 90%;
+  width: 95%;
   font-size: 1.5rem;
   margin-left: auto;
   margin-right: auto;
@@ -154,7 +158,7 @@
 
 /* PAGE: Subdivision */
 .subdivision .content-body table {
-  width: 700px;
+  width: 800px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -162,6 +166,9 @@
   width: 14rem;
   text-align: left;
   padding-left: 20px;
+}
+.subdivision .organizationName {
+  width: 20rem;
 }
 
 /* PAGE: Group */
@@ -209,16 +216,16 @@
   border: 2px black solid;
 }
 .input table tr th {
-  width: 100px;
+  width: 110px;
   border-bottom-width: 1px;
 }
-.input table tbody tr td input, .input table tbody tr td div {
-  font-size: 2.4rem;
-  width: 6rem;
+.input table tbody tr td, .input table tbody tr td input, .input table tbody tr td div {
+  font-size: 1.8rem;
+  width: 4rem;
 }
 .input .participatingPlayer {
   width: 100%;
-  font-size: 3.0rem;
+  font-size: 1.8rem;
   text-align: center;
 }
 .input .participatingPlayer div {
@@ -229,6 +236,27 @@
 }
 .input .boderBottom2 {
   border-bottom-width: 2px;
+}
+
+.input .tenKeypad {
+  width: 300px;
+  margin: auto;
+  font-size: 1.8rem;
+}
+.input .tenKeypad table {
+  border: 1px black solid;
+  background-color: gray;
+  color: white;
+}
+.input .tenKeypad table tbody tr {
+  height: 30px;
+}
+.input .tenKeypad .line0 {
+  background-color: rgb(70, 70, 70);
+}
+.input .tenKeypad table tbody tr td {
+  width: 100px;
+  border: 1px black solid;
 }
 
 @media only screen and (max-width: 800px) {

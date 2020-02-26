@@ -79,7 +79,7 @@ class Player extends Component {
     // 承認ボタンの表示
     let htmlConfirmBox;
     if(this.props.requiredConfirm) {
-      confirmBox = (
+      htmlConfirmBox = (
         <div>
           <label>
             <input type="checkbox" id="confirm" name="confirm" />{getMessage(msg.MSG_CONFIRM)}

@@ -12,6 +12,8 @@ import { participatingPlayersAction } from "../redux/actions/tournament/composit
 import { eventResultRegisterAction } from "../redux/actions/tournament/composition/eventResultAction";
 
 // React Component
+import TenKeyboard from "../components/container/TenKeyboard";
+
 import Error from "../components/presentational/error";
 import Loading from "../components/presentational/loading";
 import ContentHeader from "../components/presentational/contentHeader";
@@ -51,7 +53,9 @@ class Input extends Component {
         penalty: null  
       }
     };
+    this.tenKeyboard = new TenKeyboard();
     this.handleChangeForm = this.handleChangeForm.bind(this);
+    this.handleOnClick = this.handleOnClick.bind(this);
   }
   componentDidMount() {
     document.title = getMessage(msg.TITLE_INPUT);
@@ -86,6 +90,10 @@ class Input extends Component {
       this.setState({ input: calculateScore(inputData) });
     }
   }
+  handleOnClick(e) {
+    // <div><input radonly/></div>でクリックは<div>が取得
+    this.tenKeyboard.setTarget(e.target);
+  }
   doUpdate() {
     let message;
     if(isAllEntered(this.state.input)) {
@@ -116,9 +124,10 @@ class Input extends Component {
     ];
     return (
       <div className="input">
-        <ContentHeader header={this.props.header} />
+        <ContentHeader header={this.props.header} displayShort={true} />
         <ContentnNavi navi={navi} history={this.props.history} />
         <div className="participatingPlayer">
+          <div className="mr-5">{this.props.header.eventName}</div>
           <div>{parseInt(pp.bibs)}番:</div><div><PlayerName player={pp}/></div>
         </div>
         <div className="content-body">
@@ -140,15 +149,15 @@ class Input extends Component {
               </thead>
               <tbody>
                 <tr>
-                  <td><div><InputNumber0_1 name="d2" value={s.d2} /></div></td>
-                  <td><div><InputNumber0_1 name="d1" value={s.d1} /></div></td>
-                  <td className="boderLeft2"><div><InputNumber0_1 name="e1" value={s.e1} /></div></td>
-                  <td><div><InputNumber0_1 name="e2" value={s.e2} /></div></td>
-                  <td><div><InputNumber0_1 name="e3" value={s.e3} /></div></td>
-                  <td><div><InputNumber0_1 name="e4" value={s.e4} /></div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="d2" value={s.d2} /></div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="d1" value={s.d1} /></div></td>
+                  <td className="boderLeft2"><div onClick={this.handleOnClick}><InputNumber0_1 name="e1" value={s.e1} /></div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e2" value={s.e2} /></div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e3" value={s.e3} /></div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e4" value={s.e4} /></div></td>
                   <td className="boderLeft2" ><div>{s.et}</div></td>
                   <td><div>{s.e}</div></td>
-                  <td><div><InputNumber0_1 name="penalty" value={s.penalty} /></div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="penalty" value={s.penalty} /></div></td>
                   <td className="boderLeft2" ><div>{s.score}</div></td>
                 </tr>
               </tbody>
@@ -156,6 +165,7 @@ class Input extends Component {
           </form>
         </div>
         <div  className="content-footer">
+          {this.tenKeyboard.render()}
         </div>
       </div>
     );
