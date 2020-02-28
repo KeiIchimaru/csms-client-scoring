@@ -14,11 +14,17 @@ export function getResponceError(response) {
     message: response.data.error
   }
 };
-export function isDict(v) {
-  return typeof v === 'object' && v !== null && !(v instanceof Array) && !(v instanceof Date);
+export function typeOf(obj) {
+  return toString.call(obj).slice(8, -1).toLowerCase();
 }
-export function isArray(v) {
-  return typeof v === 'object' && v !== null && v instanceof Array;
+export function isString(obj) {
+  return typeOf(obj) == 'string';
+}
+export function isDict(obj) {
+  return typeof obj === 'object' && obj !== null && !(obj instanceof Array) && !(obj instanceof Date);
+}
+export function isArray(obj) {
+  return typeof obj === 'object' && obj !== null && obj instanceof Array;
 }
 export function getName(items, id){
   // forEachのループ内でreturnしても全ての要素に対して処理が実行されるので注意！！
@@ -45,6 +51,16 @@ export function isAllEntered(items) {
     return true;
   }
   return false;
+}
+export function toFloatAll(items) {
+  if(items && isDict(items)) {
+    let result = {};
+    for (let key in items) {
+      result[key] = (items[key] == null || items[key].length == 0 ? null : (items[key] == "." ? 0 : parseFloat(items[key])))
+    };
+    return result;
+  }
+  return items;
 }
 export function round(value, ndigits) {
   return Math.round(value * ndigits) / ndigits

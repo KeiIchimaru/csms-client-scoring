@@ -13,6 +13,16 @@ import Group from './pages/Group';
 import Player from './pages/Player';
 import Input from './pages/Input';
 
+// Redux Action
+import {
+  pageControllerGenderAction,
+  pageControllerClassificationAction,
+  pageControllerEventAction
+} from "./redux/actions/pageControllerAction";
+import {
+  subdivisionsAction,
+} from "./redux/actions/tournament/management/subdivisionsAction";
+
 // コンポーネントにデータをpropsとして引き継ぐ場合
 // <Route path='/subdivision' render={props => <Subdivision basename={basename} {...props} />} />
 // ...propsはスプレッド構文です。
@@ -22,6 +32,7 @@ const basename = '/scoring';
 const App = (props) => {
   const alert = useAlert();
   const dispatch = props.dispatch;
+
   return (
     <Router basename={basename}>
       <Switch>

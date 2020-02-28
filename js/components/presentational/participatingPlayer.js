@@ -58,7 +58,9 @@ const participatingPlayer = (props) => {
           <PlayerName player={pp} />
         </div>
       </td>
-      <td className="actingOrder">{p ? p.sequence : ""}</td>
+      { !props.isShort &&
+        <td className="actingOrder">{p ? p.sequence : ""}</td>
+      }
       {displayScore}
     </>
   )}

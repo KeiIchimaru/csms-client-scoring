@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import { getMessage, isAllEntered, round } from "../lib/ulib";
+import { getMessage, isAllEntered, toFloatAll, round } from "../lib/ulib";
 import { getHeaderProps, getStateError, getFetching } from "../lib/propsLib";
 import * as msg from "../lib/messages";
 
@@ -41,21 +41,29 @@ class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isChange: false,
       isUpdate: false,
-      input: {
+      // 入力必須項目はnullで初期化しておく
+      newValue: {
         d1: null,
         d2: null,
         e1: null,
         e2: null,
         e3: null,
         e4: null,
-        penalty: null  
-      }
+        penalty: null          
+      },
+      fieldStyle: {}
     };
-    this.tenKeyboard = new TenKeyboard();
-    this.handleChangeForm = this.handleChangeForm.bind(this);
+    this.oldValue = null;
+    this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleOnClick = this.handleOnClick.bind(this);
+    this.handleOnClickContent = this.handleOnClickContent.bind(this);
+    this.setFieldValue = this.setFieldValue.bind(this);
+    this.tenKeyboard = new TenKeyboard(this.setFieldValue);
+  }
+  setFieldValue(fieldValue) {
+    let newValue = { ...this.state.newValue, ...fieldValue };
+    this.setState({ newValue });
   }
   componentDidMount() {
     document.title = getMessage(msg.TITLE_INPUT);
@@ -67,14 +75,14 @@ class Input extends Component {
   }
   componentDidUpdate(prevProps) {
     // mapStateToPropsでstateがpropsに変換されている。
-    let ppp = prevProps.header.participatingPlayer;
-    let pp = this.props.header.participatingPlayer;
-    if(typeof ppp === 'undefined' && pp) {
+    let ppp = prevProps.header ? prevProps.header.participatingPlayer  : null;
+    let pp = this.props.header ? this.props.header.participatingPlayer : null;
+    if(!ppp && pp) {
       // this.state更新
       if(pp.scores && pp.scores[this.props.header.event]) {
+        this.oldValue = JSON.parse(pp.scores[this.props.header.event].constitution);
         this.setState({
-          isChange: false,
-          input: JSON.parse(pp.scores[this.props.header.event].constitution)
+          newValue: JSON.parse(pp.scores[this.props.header.event].constitution),
         });
       }
     }
@@ -83,23 +91,54 @@ class Input extends Component {
       this.props.history.push("/player");
     }
   }
-  handleChangeForm(e) {
-    let inputData = { ...this.state.input, [e.target.name]: parseFloat(e.target.value) };
-    this.setState({ isChange: true, input: inputData });
-    if(isAllEntered(inputData)) {
-      this.setState({ input: calculateScore(inputData) });
+  handleOnBlur(target) {
+    let newValue = toFloatAll(this.state.newValue);
+    if(isAllEntered(newValue)) {
+      newValue = calculateScore(newValue);
     }
+    this.setState({ newValue });
+    return newValue;
   }
   handleOnClick(e) {
     // <div><input radonly/></div>でクリックは<div>が取得
-    this.tenKeyboard.setTarget(e.target);
+    this.tenKeyboard.setTarget(e.target, this.handleOnBlur);
+    let style = {};
+    style[e.target.name] = this.tenKeyboard.fourcusStyle;
+    this.setState({ fieldStyle: style })
+  }
+  handleOnClickContent(e) {
+    // 入力フィールド？
+    if(e.target.tagName.toLowerCase() == "input") return;
+    // tenKeypad?
+    if(e.target.tagName.toLowerCase() == "td") {
+      if(e.target.closest("#tenKeypad")) return;
+    }
+    // NAVI?
+    if(e.target.tagName.toLowerCase() == "div") {
+      if(e.target.closest("#content-navi")) return;
+    }
+    // 上記以外をクリック
+    this.tenKeyboard.setTarget(null, this.handleOnBlur);
+    this.setState({ fieldStyle: {} });
   }
   doUpdate() {
+    const newValue = this.handleOnBlur();
     let message;
-    if(isAllEntered(this.state.input)) {
-      if(this.state.input.d1 == this.state.input.d2) {
-        if(this.state.isChange) {
-          this.props.dispatchEventResultRegisterAction(this.props.header, this.state.input);
+    if(isAllEntered(newValue)) {
+      if(newValue.d1 == newValue.d2) {
+        let isChange = false;
+        if(this.oldValue == null) {
+          isChange = true;
+        } else {
+          for (let key in newValue) {
+            if(newValue[key] != this.oldValue[key]) {
+              isChange = true;
+              break;
+            }
+          }
+        }
+        if(isChange) {
+          this.props.dispatchEventResultRegisterAction(this.props.header, newValue);
           this.setState({ isUpdate: true, });
           return true;  
         } else {
@@ -115,15 +154,16 @@ class Input extends Component {
     return false;
   }
   renderView() {
-    let s = this.state.input;
-    let h = this.props.header;
-    let pp = h.participatingPlayer;
-    let navi = [
+    const i = this.state.newValue;
+    const s = this.state.fieldStyle;
+    const h = this.props.header;
+    const pp = h.participatingPlayer;
+    const navi = [
       [getMessage(msg.TXT_CANCEL), "/player"],
       [getMessage(msg.TXT_RETURN), null, () => this.doUpdate()],
     ];
     return (
-      <div className="input">
+      <div className="input" onClick={this.handleOnClickContent} >
         <ContentHeader header={this.props.header} displayShort={true} />
         <ContentnNavi navi={navi} history={this.props.history} />
         <div className="participatingPlayer">
@@ -131,7 +171,7 @@ class Input extends Component {
           <div>{parseInt(pp.bibs)}番:</div><div><PlayerName player={pp}/></div>
         </div>
         <div className="content-body">
-          <form onChange={this.handleChangeForm}>
+          <form>
             <table>
               <thead>
                 <tr>
@@ -149,16 +189,18 @@ class Input extends Component {
               </thead>
               <tbody>
                 <tr>
-                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="d2" value={s.d2} /></div></td>
-                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="d1" value={s.d1} /></div></td>
-                  <td className="boderLeft2"><div onClick={this.handleOnClick}><InputNumber0_1 name="e1" value={s.e1} /></div></td>
-                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e2" value={s.e2} /></div></td>
-                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e3" value={s.e3} /></div></td>
-                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e4" value={s.e4} /></div></td>
-                  <td className="boderLeft2" ><div>{s.et}</div></td>
-                  <td><div>{s.e}</div></td>
-                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="penalty" value={s.penalty} /></div></td>
-                  <td className="boderLeft2" ><div>{s.score}</div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="d2" value={i.d2} style={s.d2} /></div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="d1" value={i.d1} style={s.d1} /></div></td>
+                  <td className="boderLeft2">
+                      <div onClick={this.handleOnClick}><InputNumber0_1 name="e1" value={i.e1} style={s.e1} /></div>
+                  </td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e2" value={i.e2} style={s.e2} /></div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e3" value={i.e3} style={s.e3} /></div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e4" value={i.e4} style={s.e4} /></div></td>
+                  <td className="boderLeft2" ><div>{i.et}</div></td>
+                  <td><div>{i.e}</div></td>
+                  <td><div onClick={this.handleOnClick}><InputNumber0_1 name="penalty" value={i.penalty} style={s.penalty} /></div></td>
+                  <td className="boderLeft2" ><div>{i.score}</div></td>
                 </tr>
               </tbody>
             </table>
@@ -195,8 +237,10 @@ const mapStateToProps = (state, ownProps) => {
   // API error判定
   let error = getStateError(state);
   if(error) return { error };
-  // Page表示判定
+  // API call?
   let isFetching = getFetching(state);
+  if(isFetching) return { error, isFetching }
+  // Page表示判定
   let isPermittedView = ctl.gender && ctl.classification && ctl.event && ctl.subdivision && ctl.competitionGroup && ctl.bibs;
   // 追加propsの設定
   let header = getHeaderProps(state);

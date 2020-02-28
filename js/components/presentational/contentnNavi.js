@@ -27,7 +27,7 @@ const contentNavi = (props) => {
     );
   });  
   return (
-      <div className="content-navi w-100 text-center">
+      <div id="content-navi" className="content-navi w-100 text-center">
         <div>
           {items}
         </div>

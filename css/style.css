@@ -150,6 +150,12 @@
   border:1px;
   margin-bottom: 20px;
 }
+.competition .content-body label[for="save"] {
+  font-size: 0.9rem;
+  margin-top: 2px;
+  margin-left: 5px;
+  color: darkgrey;
+} 
 .competition .content-body button {
   margin-top: 40px;
   margin-bottom: 20px;
@@ -222,6 +228,9 @@
 .input table tbody tr td, .input table tbody tr td input, .input table tbody tr td div {
   font-size: 1.8rem;
   width: 4rem;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 .input .participatingPlayer {
   width: 100%;
@@ -238,6 +247,9 @@
   border-bottom-width: 2px;
 }
 
+.tenKeyboardFourcus {
+  background-color: bisque;
+}
 .input .tenKeypad {
   width: 300px;
   margin: auto;

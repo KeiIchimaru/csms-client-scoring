@@ -15,6 +15,7 @@ import {
 } from "../actions/actionTypes"
 
 const initialState = {
+  isFirstTime: true,
   gender: NOT_SELECTED,
   classification: NOT_SELECTED,
   event: NOT_SELECTED,
@@ -42,7 +43,7 @@ const pageController = (state = initialState, action) => {
       let v = parseInt(action.value);
       let classification = (state.gender == v ? state.classification : NOT_SELECTED);
       let event = (state.gender == v ? state.event : NOT_SELECTED);
-      return Object.assign({}, state, { gender: v, classification, event });
+      return Object.assign({}, state, { isFirstTime: false, gender: v, classification, event });
     }
     case PAGE_CONTROLLER_CLASSIFICATION: {
       return Object.assign({}, state, { classification: parseInt(action.value) });

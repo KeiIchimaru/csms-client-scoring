@@ -95,7 +95,6 @@ class Group extends Component {
             <tr>
               <th>{getMessage(msg.TXT_BIBS)}</th>
               <th>{getMessage(msg.TXT_NAME)}</th>
-              <th className="actingOrderTitle">{getMessage(msg.TXT_ACTING_ORDER)}</th>
               <th>{getMessage(msg.TXT_SCORE)}</th>
             </tr>
           </thead>
@@ -137,8 +136,10 @@ const mapStateToProps = (state, ownProps) => {
   // API error判定
   let error = getStateError(state);
   if(error) return { error };
-  // Page表示判定
+  // API call?
   let isFetching = getFetching(state);
+  if(isFetching) return { error, isFetching }
+  // Page表示判定
   let isPermittedView = ctl.gender && ctl.classification && ctl.event && ctl.subdivision;
   // 追加propsの設定
   let header = getHeaderProps(state);

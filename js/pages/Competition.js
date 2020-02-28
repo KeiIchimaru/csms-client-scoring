@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
 import { NOT_SELECTED } from "../lib/constant";
@@ -33,6 +34,15 @@ class Competition extends Component {
   }
   checkNext(e) {
     if(this.props.gender && this.props.classification && this.props.event) {
+      if(document.getElementById('save').checked) {
+        localStorage.setItem('gender', this.props.gender);
+        localStorage.setItem('classification', this.props.classification);
+        localStorage.setItem('event', this.props.event);  
+      } else {
+        localStorage.removeItem('gender');
+        localStorage.removeItem('classification');
+        localStorage.removeItem('event');
+      }
       this.props.getSubdivisions(this.props.gender, this.props.classification, this.props.event);
       this.props.history.push('/subdivision');
     } else {
@@ -51,14 +61,17 @@ class Competition extends Component {
           <div>
             競技：<SelectItem name="event" value={this.props.event} items={this.props.eventItems} onChange={this.props.changeEvent} />
           </div>
-          <button type="button" className="btn-secondary" onClick={e => this.checkNext(e)}>決定</button>
+          <div>
+            <input type="checkbox" id="save" defaultChecked /><label htmlFor="save">設定を保存する</label>
+            <button type="button" className="ml-5 btn-secondary" onClick={e => this.checkNext(e)}>決定</button>
+          </div>
         </div>
         <div  className="content-footer">
         </div>
       </div>
     );
   };
-  render() {
+  render() {    
     if(this.props.error) {
       return (
         <Error error={this.props.error} />
@@ -69,21 +82,40 @@ class Competition extends Component {
         <Loading />
       );
     }
+    if(this.props.isSkipView) {
+      return (
+        <Redirect to="/subdivision" />
+      );
+    }
     return this.renderView();
   }
 }
 // for React-Redux
 const mapStateToProps = (state, ownProps) => {
-  console.log(state.tournament.composition.tournament);
   // state略号設定
   let ctl = state.pageController;
   let t = state.tournament.composition.tournamentEvent;
   // API error判定
   let error = getStateError(state);
   if(error) return { error };
-  // Page表示判定
+  // API call?
   let isFetching = getFetching(state);
-  let isPermittedView = true;
+  if(isFetching) return { error, isFetching }
+  // Page表示判定
+  let isSkipView = false;
+  if(ctl.isFirstTime) {
+    const gender = localStorage.getItem('gender');
+    const classification = localStorage.getItem('classification');
+    const event = localStorage.getItem('event');
+    if(gender && classification && event) {
+      isSkipView = true;
+      ownProps.dispatch(pageControllerGenderAction(gender));
+      ownProps.dispatch(pageControllerClassificationAction(classification));
+      ownProps.dispatch(pageControllerEventAction(event));
+      ownProps.dispatch(subdivisionsAction(gender, classification, event));
+      return { error, isFetching, isSkipView }
+    }  
+  }
   // 以下の内容がpropsに追加される。（更新不可）
   // 第２引数にownPropsを指定できるが、ownPropsの内容でadditionalPropsの内容を変えたい場合に指定する。（additionalPropsはpropsに追加される）
   let classification = ctl.classification;
@@ -97,7 +129,6 @@ const mapStateToProps = (state, ownProps) => {
       // ここでdispatchしてclassificationの設定依頼を行う。(state.pageController.classificationはNOT_SELECTEDのまま)
       // ここでdispatchしても再描画は行われない。
       ownProps.dispatch(pageControllerClassificationAction(classification));
-      
     }
     if(classification != NOT_SELECTED){
       let events = classifications[classification];
@@ -109,7 +140,7 @@ const mapStateToProps = (state, ownProps) => {
   let additionalProps = {
     error,
     isFetching,
-    isPermittedView,
+    isSkipView,
     tournament: state.tournament.composition.tournament,
     header: getHeaderProps(state),
     gender: ctl.gender,
