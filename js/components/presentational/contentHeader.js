@@ -24,7 +24,7 @@ const contentHeader = (props) => {
     </div>
   ) : (
     <div className="content-header w-100">
-      <h1>大会{props.header.day}日目&ensp;{props.header.genderName}&ensp;{props.header.eventName}&ensp;{h2_subdivision}</h1>
+      <h1>大会{props.header.day}日目&ensp;{props.header.genderName}&ensp;{props.header.event.name}&ensp;{h2_subdivision}</h1>
       {subdivision}{competitionGroup}
     </div>
   );

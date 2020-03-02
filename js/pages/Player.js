@@ -72,7 +72,7 @@ class Player extends Component {
       let scoreStyle = (isTopNumber(p.bibs, this.props.teamScore) ? CSS_TOP_NUMBER : null);
       return (
       <tr key={`${Player.displayName}_${i}`} className={style} >
-        <ParticipatingPlayer event={this.props.header.event} player={p} participatingPlayer={pp} onClick={this.redirectInput} scoreStyle={scoreStyle} />
+        <ParticipatingPlayer event={this.props.header.event.id} player={p} participatingPlayer={pp} onClick={this.redirectInput} scoreStyle={scoreStyle} />
       </tr>
       )
     });

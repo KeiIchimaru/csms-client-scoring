@@ -71,7 +71,7 @@ class Group extends Component {
                 </td>
               </>
             }
-            <ParticipatingPlayer event={this.props.header.event} competitionGroup={competitionGroup.id} player={player} participatingPlayer={this.props.participatingPlayers[player.bibs]} onClick={this.redirectInput} scoreStyle={scoreStyle} isShort={true} />
+            <ParticipatingPlayer event={this.props.header.event.id} competitionGroup={competitionGroup.id} player={player} participatingPlayer={this.props.participatingPlayers[player.bibs]} onClick={this.redirectInput} scoreStyle={scoreStyle} isShort={true} />
           </tr>
         );
       })

@@ -21,8 +21,8 @@ import ContentnNavi from "../components/presentational/contentnNavi";
 import InputNumber0_1 from "../components/presentational/inputNumber0_1";
 import PlayerName from "../components/presentational/playerName";
 
-function calculateScore(state) {
-  let ndigits = 100;
+function calculateScore(decimal_places, state) {
+  let ndigits = 10 ** decimal_places;
   let d = round((state.d1 + state.d2) / 2.0, ndigits);
   let ee = [state.e1, state.e2, state.e3, state.e4];
   let et = round(ee.reduce((ttl, v) => ttl + v) - Math.max(...ee) - Math.min(...ee), ndigits);
@@ -79,10 +79,10 @@ class Input extends Component {
     let pp = this.props.header ? this.props.header.participatingPlayer : null;
     if(!ppp && pp) {
       // this.state更新
-      if(pp.scores && pp.scores[this.props.header.event]) {
-        this.oldValue = JSON.parse(pp.scores[this.props.header.event].constitution);
+      if(pp.scores && pp.scores[this.props.header.event.id]) {
+        this.oldValue = JSON.parse(pp.scores[this.props.header.event.id].constitution);
         this.setState({
-          newValue: JSON.parse(pp.scores[this.props.header.event].constitution),
+          newValue: JSON.parse(pp.scores[this.props.header.event.id].constitution),
         });
       }
     }
@@ -94,7 +94,7 @@ class Input extends Component {
   handleOnBlur(target) {
     let newValue = toFloatAll(this.state.newValue);
     if(isAllEntered(newValue)) {
-      newValue = calculateScore(newValue);
+      newValue = calculateScore(this.props.header.event.decimal_places, newValue);
     }
     this.setState({ newValue });
     return newValue;

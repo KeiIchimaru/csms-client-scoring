@@ -55,14 +55,20 @@ export const getHeaderProps = (state) => {
       }
     }
   }
+  let event = null;
+  for (var row of (t.events[ctl.gender] && t.events[ctl.gender][ctl.classification] ? t.events[ctl.gender][ctl.classification] : [])) {
+    if(row.id == ctl.event) {
+      event = row;
+      break;
+    }
+  }
   return {
       day: d.day,
       gender: ctl.gender,
       genderName: getName(t.genders, ctl.gender),
       classification: ctl.classification,
       classificationName: (t.classifications[ctl.gender] ? getName(t.classifications[ctl.gender], ctl.classification) : null),
-      event: ctl.event,
-      eventName: (t.events[ctl.gender] && t.events[ctl.gender][ctl.classification] ? getName(t.events[ctl.gender][ctl.classification], ctl.event) : null),
+      event,
       subdivision,
       competitionGroup,
       player,

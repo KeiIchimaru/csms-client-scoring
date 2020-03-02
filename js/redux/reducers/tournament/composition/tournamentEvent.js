@@ -33,7 +33,7 @@ const _makeState = (state, action) => {
   gender_id = row.gender_id;
   genders.push([row.gender_id, row.gender_name]);
   classification_id = row.classification_id;
-  name_c.push({id: row.classification_id, name: row.classification_name});
+  name_c.push([row.classification_id, row.classification_name]);
   // データ処理
   for(let i = 0; i < action.data.length; i++) {
     row = action.data[i];
@@ -61,7 +61,8 @@ const _makeState = (state, action) => {
       id: row.event_id,
       name: row.event_name,
       abbreviation: row.event_abbreviation,
-      measurement: row.measurement
+      measurement: row.measurement,
+      decimal_places: row.decimal_places
     });
   }
   classifications[gender_id] = name_c;
