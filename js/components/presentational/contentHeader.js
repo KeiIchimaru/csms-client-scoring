@@ -4,10 +4,14 @@ import { getDisplayTime, getOrganizationName } from "../../lib/ulib";
 
 // props set by getHeaderProps
 const contentHeader = (props) => {
+  let eventName = null;
   let subdivision = null;
   let h2_subdivision = null;
   let competitionGroup = null;
   let h3_competitionGroup = null;
+  if(props.header.event) {
+    eventName = props.header.event.name;
+  }
   if(props.header.subdivision) {
     let s = props.header.subdivision;
     h2_subdivision = `${s.number}班`;
@@ -24,7 +28,7 @@ const contentHeader = (props) => {
     </div>
   ) : (
     <div className="content-header w-100">
-      <h1>大会{props.header.day}日目&ensp;{props.header.genderName}&ensp;{props.header.event.name}&ensp;{h2_subdivision}</h1>
+      <h1>大会{props.header.day}日目&ensp;{props.header.genderName}&ensp;{eventName}&ensp;{h2_subdivision}</h1>
       {subdivision}{competitionGroup}
     </div>
   );

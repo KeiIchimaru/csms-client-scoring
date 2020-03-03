@@ -35,8 +35,7 @@ export const eventResultRegisterAction = (header, data) => {
               subdivision: header.subdivision.is,
               competitionGroup: header.competitionGroup.id,
               bibs: header.player.bibs,
-              player: header.participatingPlayer.player_id,
-              entry_organization_id: header.participatingPlayer.entry_organization_id
+              player: header.participatingPlayer.player_id
           },
           input: data
         }, {
