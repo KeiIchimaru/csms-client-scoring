@@ -63,5 +63,5 @@ export function toFloatAll(items) {
   return items;
 }
 export function round(value, ndigits) {
-  return Math.round(value * ndigits) / ndigits
+  return Math.round(value * ndigits) / ndigits;
 }
