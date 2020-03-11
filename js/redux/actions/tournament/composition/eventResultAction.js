@@ -32,6 +32,7 @@ export const eventResultRegisterAction = (header, data) => {
               gender: header.gender,
               classification: header.classification,
               event: header.event.id,
+              measurement: header.event.measurement,
               subdivision: header.subdivision.is,
               competitionGroup: header.competitionGroup.id,
               bibs: header.player.bibs,
