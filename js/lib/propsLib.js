@@ -78,6 +78,9 @@ export const getHeaderProps = (state) => {
 export const isValidityPlayer = (participatingPlayer) => {
   return (participatingPlayer && participatingPlayer.validity == 1);
 }
+export const isIndividualSelection = (competitionGroup) => {
+  return (competitionGroup && competitionGroup.organization_name == null);
+}
 export const isTopNumber = (bibs, teamScore) => {
   for(let score of teamScore.players) {
     if(bibs == score.bibs) return true;
@@ -126,4 +129,7 @@ export const getEventTeamScore = (event, players, participatingPlayers, confirme
     score: (scores.length > 0 ? ttlScore : null),
     players: scores
   } ;
+}
+export function getOrganizationName(organizationName) {
+  return organizationName ? organizationName : "個人選抜";
 }

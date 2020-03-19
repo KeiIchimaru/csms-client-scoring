@@ -23,9 +23,14 @@ import PlayerName from "../components/presentational/playerName";
 
 function calculateScore(decimal_places, state) {
   let ndigits = 10 ** decimal_places;
-  let d = round((state.d1 + state.d2) / 2.0, ndigits);
-  let ee = [state.e1, state.e2, state.e3, state.e4];
-  let et = round(ee.reduce((ttl, v) => ttl + v) - Math.max(...ee) - Math.min(...ee), ndigits);
+  let d = state.d2 ? round((state.d1 + state.d2) / 2.0, ndigits) : state.d1;
+  let ee = [state.e1, state.e2];
+  if(state.e3) ee.push(state.e3);
+  if(state.e4) ee.push(state.e4);
+  let et = 0.0;
+  if(ee.length == 4) et = round(ee.reduce((ttl, v) => ttl + v) - Math.max(...ee) - Math.min(...ee), ndigits);
+  if(ee.length == 3) et = round(ee.reduce((ttl, v) => ttl + v) - Math.min(...ee), ndigits);
+  if(ee.length == 2) et = round(ee.reduce((ttl, v) => ttl + v), ndigits);
   let e = round((et / 2.0), ndigits);
   let score = round(d + e - state.penalty, ndigits);
   let data = { ...state, et, e, score };
@@ -40,18 +45,19 @@ function calculateScore(decimal_places, state) {
 class Input extends Component {
   constructor(props) {
     super(props);
+    const n = this.props.tournament.notices;
+    let newValue = {};
+    newValue.d1 = null;
+    if(n.numberOfD >= 2) newValue.d2 = null;
+    newValue.e1 = null;
+    newValue.e2 = null;
+    if(n.numberOfE >= 3) newValue.e3 = null;
+    if(n.numberOfE >= 4) newValue.e4 = null;
+    newValue.penalty = null;
     this.state = {
       isUpdate: false,
       // 入力必須項目はnullで初期化しておく
-      newValue: {
-        d1: null,
-        d2: null,
-        e1: null,
-        e2: null,
-        e3: null,
-        e4: null,
-        penalty: null          
-      },
+      newValue,
       fieldStyle: {}
     };
     this.oldValue = null;
@@ -81,9 +87,9 @@ class Input extends Component {
       // this.state更新
       if(pp.scores && pp.scores[this.props.header.event.id]) {
         this.oldValue = JSON.parse(pp.scores[this.props.header.event.id].constitution);
-        this.setState({
-          newValue: JSON.parse(pp.scores[this.props.header.event.id].constitution),
-        });
+        let json = JSON.parse(pp.scores[this.props.header.event.id].constitution);
+        let newValue = { ...this.state.newValue, ...json };
+        this.setState({ newValue });
       }
     }
     // 更新後に画面遷移する。
@@ -125,7 +131,7 @@ class Input extends Component {
     const newValue = this.handleOnBlur();
     let message;
     if(isAllEntered(newValue)) {
-      if(newValue.d1 == newValue.d2) {
+      if(!newValue.d2 || (newValue.d2 && newValue.d1 == newValue.d2)) {
         let isChange = false;
         if(this.oldValue == null) {
           isChange = true;
@@ -158,6 +164,7 @@ class Input extends Component {
     const s = this.state.fieldStyle;
     const h = this.props.header;
     const pp = h.participatingPlayer;
+    const n = this.props.tournament.notices;
     const navi = [
       [getMessage(msg.TXT_CANCEL), "/player"],
       [getMessage(msg.TXT_RETURN), null, () => this.doUpdate()],
@@ -175,12 +182,18 @@ class Input extends Component {
             <table>
               <thead>
                 <tr>
+                  { n.numberOfD >= 2 &&
                   <th><div>D2</div></th>
+                  }
                   <th><div>D1</div></th>
                   <th className="boderLeft2"><div>E1</div></th>
                   <th><div>E2</div></th>
+                  { n.numberOfE >= 3 &&
                   <th><div>E3</div></th>
+                  }
+                  { n.numberOfE >= 4 &&
                   <th><div>E4</div></th>
+                  }
                   <th className="boderLeft2"><div>E計</div></th>
                   <th><div>合計</div></th>
                   <th><div>減点</div></th>
@@ -189,14 +202,20 @@ class Input extends Component {
               </thead>
               <tbody>
                 <tr>
+                  { n.numberOfD >= 2 &&
                   <td><div onClick={this.handleOnClick}><InputNumber0_1 name="d2" value={i.d2} style={s.d2} /></div></td>
+                  }
                   <td><div onClick={this.handleOnClick}><InputNumber0_1 name="d1" value={i.d1} style={s.d1} /></div></td>
                   <td className="boderLeft2">
                       <div onClick={this.handleOnClick}><InputNumber0_1 name="e1" value={i.e1} style={s.e1} /></div>
                   </td>
                   <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e2" value={i.e2} style={s.e2} /></div></td>
+                  { n.numberOfE >= 3 &&
                   <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e3" value={i.e3} style={s.e3} /></div></td>
+                  }
+                  { n.numberOfE >= 4 &&
                   <td><div onClick={this.handleOnClick}><InputNumber0_1 name="e4" value={i.e4} style={s.e4} /></div></td>
+                  }
                   <td className="boderLeft2" ><div>{i.et}</div></td>
                   <td><div>{i.e}</div></td>
                   <td><div onClick={this.handleOnClick}><InputNumber0_1 name="penalty" value={i.penalty} style={s.penalty} /></div></td>

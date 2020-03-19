@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
+import axios from 'axios';
 
 import { getMessage } from "../lib/ulib";
 import {
@@ -10,6 +11,7 @@ import {
   getStateError,
   getFetching,
   isValidityPlayer,
+  isIndividualSelection,
   isTopNumber,
   getEventTeamScore
 } from "../lib/propsLib";
@@ -19,6 +21,11 @@ import * as msg from "../lib/messages";
 import { pageControllerBibsAction } from "../redux/actions/pageControllerAction";
 import { participatingPlayersAction } from "../redux/actions/tournament/composition/participatingPlayersAction";
 import { eventResultConfirmAction } from "../redux/actions/tournament/composition/eventResultAction";
+import {
+  subdivisionsPlayerSequenceAction,
+  subdivisionsPlayerSortSequenceAction,
+  subdivisionsPlayerSortBibsAction
+} from "../redux/actions/tournament/management/subdivisionsAction";
 
 // React Component
 import Error from "../components/presentational/error";
@@ -34,6 +41,9 @@ class Player extends Component {
     // 他のコンポーネントに引き渡すメソッドについてか以下が必要
     this.checkConfirm = this.checkConfirm.bind(this);
     this.redirectInput = this.redirectInput.bind(this);
+    this.setSequence = this.setSequence.bind(this);
+    this.sortSequence = this.sortSequence.bind(this);
+    this.sortBibs = this.sortBibs.bind(this);
   }
   checkConfirm() {
     if(this.props.requiredConfirm) {
@@ -65,14 +75,50 @@ class Player extends Component {
       );
     }
   }
+  setSequence(bibs, sequence) {
+    axios.get('/csrf-token')
+    .then(res =>
+      axios.post('/api/tournament/management/setParticipatingPlayerSequence',
+        {
+          competitionGroupId: this.props.header.competitionGroup.id,
+          bibs,
+          sequence: parseInt(sequence)
+        }, {
+          headers: { 'csrf-token': res.data.token },
+        }
+      )
+    ).then(res => {
+      this.props.subdivisionsPlayerSequenceAction(
+        this.props.header.subdivision.id,
+        this.props.header.competitionGroup.id,
+        bibs,
+        parseInt(sequence)
+      );
+    }).catch(err => {
+      console.log(err);
+    });    
+  }
+  sortSequence(e) {
+    this.props.subdivisionsPlayerSortSequenceAction(
+      this.props.header.subdivision.id,
+      this.props.header.competitionGroup.id
+    );
+  }
+  sortBibs(e) {
+    this.props.subdivisionsPlayerSortBibsAction(
+      this.props.header.subdivision.id,
+      this.props.header.competitionGroup.id
+    );
+  }
   renderView() {
-    const htmlPlayers = this.props.players.map((p, i) => {
+    const n = this.props.tournament.notices;
+    const htmlPlayers = this.props.players.map((p, i, array) => {
       let pp = this.props.participatingPlayers[p.bibs];
       let style = (isValidityPlayer(pp) ? null : "abstention" );
-      let scoreStyle = (isTopNumber(p.bibs, this.props.teamScore) ? CSS_TOP_NUMBER : null);
+      let scoreStyle = isIndividualSelection(this.props.header.competitionGroup) ? null : isTopNumber(p.bibs, this.props.teamScore) ? CSS_TOP_NUMBER : null;
       return (
       <tr key={`${Player.displayName}_${i}`} className={style} >
-        <ParticipatingPlayer event={this.props.header.event.id} player={p} participatingPlayer={pp} onClick={this.redirectInput} scoreStyle={scoreStyle} />
+        <ParticipatingPlayer notices={n} event={this.props.header.event.id} player={p} participatingPlayer={pp} onClick={this.redirectInput} scoreStyle={scoreStyle} length={array.length} setSequence={this.setSequence} />
       </tr>
       )
     });
@@ -101,15 +147,21 @@ class Player extends Component {
           <table>
             <thead>
               <tr>
-                <th className="boderLeft2">番</th>
-                <th>氏名</th>
-                <th className="actingOrderTitle">演技順</th>
+                <th className="boderLeft2"><a href="#" onClick={e => this.sortBibs(e)}>{getMessage(msg.TXT_BIBS)}</a></th>
+                <th>{getMessage(msg.TXT_NAME)}</th>
+                <th className="actingOrderTitle"><a href="#" onClick={e => this.sortSequence(e)}>{getMessage(msg.TXT_ACTING_ORDER)}</a></th>
+                { n.numberOfD >= 2 &&
                 <th className="boderLeft2">D2</th>
+                }
                 <th>D1</th>
                 <th className="boderLeft2">E1</th>
                 <th>E2</th>
+                { n.numberOfE >= 3 &&
                 <th>E3</th>
+                }
+                { n.numberOfE >= 4 &&
                 <th>E4</th>
+                }
                 <th className="boderLeft2">E計</th>
                 <th>合計</th>
                 <th>減点</th>
@@ -118,11 +170,13 @@ class Player extends Component {
             </thead>
             <tbody>
               {htmlPlayers}
+              { !isIndividualSelection(this.props.header.competitionGroup) &&
               <tr>
-                <td className="teamTotalNull" colSpan="9"></td>
+                <td className="teamTotalNull" colSpan={n.numberOfD + n.numberOfE + 3}></td>
                 <td className="teamTotalLabel" colSpan="3">チーム得点</td>
                 <td className="teamTotal">{this.props.teamScore.score}</td>
               </tr>
+              }
             </tbody>
           </table>
         </div>
@@ -191,6 +245,9 @@ const mapDispatchToProps = dispatch => {
     changeBibs: (value) => dispatch(pageControllerBibsAction(value)),
     dispatchParticipatingPlayers: (gender, subdivision, group, bibs) => dispatch(participatingPlayersAction(gender, subdivision, group, bibs)),
     dispatchEventResultConfirmAction: (header, players, next) => dispatch(eventResultConfirmAction(header, players, next)),
+    subdivisionsPlayerSequenceAction: (subdivision, competitionGroup, bibs, sequence) => dispatch(subdivisionsPlayerSequenceAction(subdivision, competitionGroup, bibs, sequence)),
+    subdivisionsPlayerSortSequenceAction: (subdivision, competitionGroup) => dispatch(subdivisionsPlayerSortSequenceAction(subdivision, competitionGroup)),
+    subdivisionsPlayerSortBibsAction: (subdivision, competitionGroup) => dispatch(subdivisionsPlayerSortBibsAction(subdivision, competitionGroup)),
   }
 };
 

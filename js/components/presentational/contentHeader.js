@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { getDisplayTime, getOrganizationName } from "../../lib/ulib";
+import { getDisplayTime } from "../../lib/ulib";
+import { getOrganizationName } from "../../lib/propsLib";
 
 // props set by getHeaderProps
 const contentHeader = (props) => {

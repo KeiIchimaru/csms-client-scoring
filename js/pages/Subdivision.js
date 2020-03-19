@@ -5,13 +5,13 @@ import { connect } from "react-redux";
 
 import {
   getMessage,
-  getDisplayTime,
-  getOrganizationName
+  getDisplayTime
 } from "../lib/ulib";
 import {
   getHeaderProps,
   getStateError,
-  getFetching
+  getFetching,
+  getOrganizationName
 } from "../lib/propsLib";
 import * as msg from "../lib/messages";
 

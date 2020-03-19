@@ -5,7 +5,10 @@ import { getResponceError } from "../../../../lib/ulib";
 import {
   SUBDIVISIONS_REQUEST,
   SUBDIVISIONS_SUCCESS,
-  SUBDIVISIONS_FAILURE
+  SUBDIVISIONS_FAILURE,
+  SUBDIVISIONS_PLAYER_SEQUENCE,
+  SUBDIVISIONS_PLAYER_SORT_SEQUENCE,
+  SUBDIVISIONS_PLAYER_SORT_BIBS
 } from "../../../actions/actionTypes"
 
 const initialState = {
@@ -28,7 +31,7 @@ const _setCompetitionGroup = (row) => ({
   number: row.c_number,
   name: row.c_name,
   abbreviation: row.c_abbreviation,
-  organization_id: row.c_organization_id,
+  organization_id: row.c_entry_organization_id,
   organization_name: row.o_organization_name,
 })
 const _makeState = (state, action) => {
@@ -75,7 +78,7 @@ const _makeState = (state, action) => {
     }
     players.push({
       bibs: row.p_bibs,
-      entry_organization_id: row.p_entry_organization_id,
+      entry_organization_id: row.c_entry_organization_id,
       sequence: row.p_sequence
     });
   }
@@ -105,6 +108,62 @@ const subdivisions = (state = initialState, action) => {
         ...initialState,
         error
       };
+    }
+    case SUBDIVISIONS_PLAYER_SEQUENCE: {
+      let newState = { ...state };
+      for(let i = 0; i < newState.data.length; i++) {
+        if(newState.data[i].id == action.data.subdivision) {
+          for(let j = 0; j < newState.data[i].competitionGroups.length; j++) {
+            if(newState.data[i].competitionGroups[j].id == action.data.competitionGroup) {
+              for(let k = 0; k < newState.data[i].competitionGroups[j].players.length; k++) {
+                if(newState.data[i].competitionGroups[j].players[k].bibs == action.data.bibs) {
+                  newState.data[i].competitionGroups[j].players[k].sequence = action.data.sequence;
+                }
+              }
+            }
+          }
+        }
+      }
+      return newState;
+    }
+    case SUBDIVISIONS_PLAYER_SORT_SEQUENCE: {
+      let newState = { ...state };
+      for(let i = 0; i < newState.data.length; i++) {
+        if(newState.data[i].id == action.data.subdivision) {
+          for(let j = 0; j < newState.data[i].competitionGroups.length; j++) {
+            if(newState.data[i].competitionGroups[j].id == action.data.competitionGroup) {
+              newState.data[i].competitionGroups[j].players.sort((a, b) => {
+                if(a.sequence == null && b.sequence == null) {
+                  if(a.bibs < b.bibs) return -1;
+                  if(a.bibs > b.bibs) return 1;
+                  return 0;
+                }
+                if(a.sequence == null && b.sequence != null) return -1;
+                if(a.sequence != null && b.sequence == null) return 1;
+                return a.sequence - b.sequence;
+              });
+            }
+          }
+        }
+      }
+      return newState;
+    }
+    case SUBDIVISIONS_PLAYER_SORT_BIBS: {
+      let newState = { ...state };
+      for(let i = 0; i < newState.data.length; i++) {
+        if(newState.data[i].id == action.data.subdivision) {
+          for(let j = 0; j < newState.data[i].competitionGroups.length; j++) {
+            if(newState.data[i].competitionGroups[j].id == action.data.competitionGroup) {
+              newState.data[i].competitionGroups[j].players.sort((a, b) => {
+                if(a.bibs < b.bibs) return -1;
+                if(a.bibs > b.bibs) return 1;
+                return 0;
+              });
+            }
+          }
+        }
+      }
+      return newState;
     }
     default: {
         return state;

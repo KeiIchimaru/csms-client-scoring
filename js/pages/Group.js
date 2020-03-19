@@ -3,8 +3,13 @@ import { withRouter } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import { getMessage, getOrganizationName } from "../lib/ulib";
-import { getHeaderProps, getStateError, getFetching } from "../lib/propsLib";
+import { getMessage } from "../lib/ulib";
+import {
+  getHeaderProps,
+  getStateError,
+  getFetching,
+  getOrganizationName
+} from "../lib/propsLib";
 import * as msg from "../lib/messages";
 
 // Redux Action
@@ -95,6 +100,7 @@ class Group extends Component {
             <tr>
               <th>{getMessage(msg.TXT_BIBS)}</th>
               <th>{getMessage(msg.TXT_NAME)}</th>
+              <th>{getMessage(msg.TXT_ACTING_ORDER)}</th>
               <th>{getMessage(msg.TXT_SCORE)}</th>
             </tr>
           </thead>
