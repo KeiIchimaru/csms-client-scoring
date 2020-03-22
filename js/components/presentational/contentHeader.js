@@ -16,7 +16,9 @@ const contentHeader = (props) => {
   if(props.header.subdivision) {
     let s = props.header.subdivision;
     h2_subdivision = `${s.number}班`;
-    subdivision = <h2>{`[練習開始:${getDisplayTime(s.practice_start_time)},`}&ensp;{`演技開始:${getDisplayTime(s.start_time)},`}&ensp;{`演技終了:${getDisplayTime(s.end_time)}]`}</h2>
+    if(s.practice_start_time || s.start_time || s.end_time) {
+      subdivision = <h2>{`[練習開始:${getDisplayTime(s.practice_start_time)},`}&ensp;{`演技開始:${getDisplayTime(s.start_time)},`}&ensp;{`演技終了:${getDisplayTime(s.end_time)}]`}</h2>
+    }
   }
   if(props.header.competitionGroup) {
     let g = props.header.competitionGroup;

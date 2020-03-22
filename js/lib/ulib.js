@@ -4,7 +4,7 @@ export function getMessage(id) {
   return MESSAGES[id];
 };
 export function getDisplayTime(time) {
-  return (time ? time.toString().slice(0,5) : null);
+  return (time ? time.toString().slice(0,5) : "");
 };
 export function getResponceError(response) {
   return {
